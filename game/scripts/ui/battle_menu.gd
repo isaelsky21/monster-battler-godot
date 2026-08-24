@@ -12,7 +12,7 @@ extends Control
 @export var mon_menu: OptionPanel
 
 
-func _ready():
+func _ready() -> void:
 	# Connect signal listeners
 	select_fight.pressed.connect(Events.request_menu_fight.emit)
 	select_mon.pressed.connect(Events.request_menu_monsters.emit)
@@ -23,17 +23,19 @@ func _ready():
 	Events.on_menu_select_monster.connect(handle_select_monsters)
 	Events.on_menu_items.connect(handle_select_items)
 	
-	# Anytime an option is successfully selected, we want to reutrn to main. Underscored variables ignored.
-	Events.request_option_selected.connect(func(_mode, _index): handle_select_main())
+	# Anytime an option is successfully selected, we want to return to main. Underscored variables ignored.
+	Events.request_option_selected.connect(func(_mode: GameRunner.INTERACTION_MODE, _index: int) -> void: handle_select_main())
 
 	# Activate the main menu 
 	handle_select_main()
 
-func is_interaction_blocked():
+
+func is_interaction_blocked() -> bool:
 	# TODO: We will want to block interaction at some point. We can use this for that.
 	return false
 
-func hide_all():
+
+func hide_all() -> void:
 	# Hides all menus. Useful since we only want one to show at a time.
 	main_menu.hide()
 	fight_menu.hide()
@@ -41,11 +43,13 @@ func hide_all():
 	mon_menu.hide()
 	item_menu.hide()
 
-func handle_select_main():
+
+func handle_select_main() -> void:
 	hide_all()
 	main_menu.show()
 
-func handle_select_fight(labels: Array[StringEnabled]):
+
+func handle_select_fight(labels: Array[StringEnabled]) -> void:
 	if is_interaction_blocked():
 		return
 	hide_all()
@@ -55,7 +59,7 @@ func handle_select_fight(labels: Array[StringEnabled]):
 	fight_menu.populate(labels)
 
 
-func handle_select_monsters(labels: Array[StringEnabled]):
+func handle_select_monsters(labels: Array[StringEnabled]) -> void:
 	if is_interaction_blocked():
 		return
 	hide_all()
@@ -65,7 +69,7 @@ func handle_select_monsters(labels: Array[StringEnabled]):
 	mon_menu.populate(labels)
 
 
-func handle_select_items(labels: Array[StringEnabled]):
+func handle_select_items(labels: Array[StringEnabled]) -> void:
 	if is_interaction_blocked():
 		return
 	hide_all()
@@ -75,7 +79,7 @@ func handle_select_items(labels: Array[StringEnabled]):
 	item_menu.populate(labels)
 
 
-func handle_select_run():
+func handle_select_run() -> void:
 	# Since we only have battles and no overworld in this prototype, running means quitting.
 	if is_interaction_blocked():
 		return

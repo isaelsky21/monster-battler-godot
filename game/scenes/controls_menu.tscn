@@ -1,14 +1,14 @@
-[gd_scene load_steps=3 format=3 uid="uid://crpahbrk5mgcm"]
+[gd_scene format=3 uid="uid://crpahbrk5mgcm"]
 
 [ext_resource type="Script" uid="uid://bjmv0bo5aupxs" path="res://scripts/ui/battle_menu.gd" id="1_n0kuk"]
 [ext_resource type="Script" uid="uid://c8c2ar3x10q7a" path="res://scripts/ui/option_panel.gd" id="2_knfhs"]
 
-[node name="controls_menu" type="Control"]
+[node name="controls_menu" type="Control" unique_id=1421708724]
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 3
 anchors_preset = 0
 
-[node name="menu" type="Control" parent="." node_paths=PackedStringArray("select_fight", "select_run", "select_mon", "select_item", "select_back", "main_menu", "fight_menu", "item_menu", "mon_menu")]
+[node name="menu" type="Control" parent="." unique_id=1124288147 node_paths=PackedStringArray("select_fight", "select_run", "select_mon", "select_item", "select_back", "main_menu", "fight_menu", "item_menu", "mon_menu")]
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 1
 anchors_preset = 15
@@ -27,38 +27,37 @@ fight_menu = NodePath("ft")
 item_menu = NodePath("items")
 mon_menu = NodePath("mons")
 
-[node name="main-controls" type="GridContainer" parent="menu"]
-visible = false
-layout_mode = 2
+[node name="main-controls" type="GridContainer" parent="menu" unique_id=775646384]
+layout_mode = 0
 offset_right = 95.0
 offset_bottom = 40.0
 columns = 2
 
-[node name="ft" type="Button" parent="menu/main-controls"]
+[node name="ft" type="Button" parent="menu/main-controls" unique_id=1987879187]
 texture_filter = 1
 layout_mode = 2
 text = "> FIGHT"
 alignment = 0
 
-[node name="item" type="Button" parent="menu/main-controls"]
+[node name="item" type="Button" parent="menu/main-controls" unique_id=14664969]
 texture_filter = 1
 layout_mode = 2
 text = "> ITEM"
 alignment = 0
 
-[node name="mons" type="Button" parent="menu/main-controls"]
+[node name="mons" type="Button" parent="menu/main-controls" unique_id=1642815355]
 texture_filter = 1
 layout_mode = 2
 text = "> MONS"
 alignment = 0
 
-[node name="run" type="Button" parent="menu/main-controls"]
+[node name="run" type="Button" parent="menu/main-controls" unique_id=818998948]
 texture_filter = 1
 layout_mode = 2
 text = "> RUN"
 alignment = 0
 
-[node name="ft" type="ScrollContainer" parent="menu" node_paths=PackedStringArray("options_parent")]
+[node name="ft" type="ScrollContainer" parent="menu" unique_id=956246066 node_paths=PackedStringArray("options_parent")]
 layout_mode = 0
 offset_right = 191.0
 offset_bottom = 99.0
@@ -66,10 +65,10 @@ script = ExtResource("2_knfhs")
 mode = 1
 options_parent = NodePath("ft_options")
 
-[node name="ft_options" type="VBoxContainer" parent="menu/ft"]
+[node name="ft_options" type="VBoxContainer" parent="menu/ft" unique_id=1218476346]
 layout_mode = 2
 
-[node name="items" type="ScrollContainer" parent="menu" node_paths=PackedStringArray("options_parent")]
+[node name="items" type="ScrollContainer" parent="menu" unique_id=1204231435 node_paths=PackedStringArray("options_parent")]
 visible = false
 layout_mode = 0
 offset_right = 103.0
@@ -78,10 +77,10 @@ script = ExtResource("2_knfhs")
 mode = 2
 options_parent = NodePath("item_options")
 
-[node name="item_options" type="VBoxContainer" parent="menu/items"]
+[node name="item_options" type="VBoxContainer" parent="menu/items" unique_id=590038403]
 layout_mode = 2
 
-[node name="mons" type="ScrollContainer" parent="menu" node_paths=PackedStringArray("options_parent")]
+[node name="mons" type="ScrollContainer" parent="menu" unique_id=2010860169 node_paths=PackedStringArray("options_parent")]
 visible = false
 layout_mode = 0
 offset_right = 183.0
@@ -90,10 +89,10 @@ script = ExtResource("2_knfhs")
 mode = 3
 options_parent = NodePath("mon_options")
 
-[node name="mon_options" type="VBoxContainer" parent="menu/mons"]
+[node name="mon_options" type="VBoxContainer" parent="menu/mons" unique_id=1431500619]
 layout_mode = 2
 
-[node name="option_back" type="Button" parent="menu"]
+[node name="option_back" type="Button" parent="menu" unique_id=27116025]
 visible = false
 layout_mode = 0
 offset_top = 72.0

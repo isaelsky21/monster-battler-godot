@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="SpeciesResource" format=3 uid="uid://buxaciimd6ihy"]
+
+[ext_resource type="Texture2D" uid="uid://q5ukv4r8xxs1" path="res://assets/art/monsters/turtle.png" id="1_0qrp4"]
+[ext_resource type="Script" uid="uid://djamiiplbweq2" path="res://scripts/content/species_resource.gd" id="1_mo2eo"]
+[ext_resource type="Script" uid="uid://b8pt4buw614s3" path="res://scripts/content/move_resource.gd" id="3_wkrva"]
+[ext_resource type="Resource" uid="uid://xdeavx7x3eb2" path="res://content/moves/smack.tres" id="4_tqbd1"]
+
+[resource]
+script = ExtResource("1_mo2eo")
+image = ExtResource("1_0qrp4")
+species_name = "Turtle"
+starting_moves = Array[ExtResource("3_wkrva")]([ExtResource("4_tqbd1")])
+type = 3
+base_max_hp = 19
+base_attack = 3
+base_defense = 7
+base_special_attack = 4
+base_special_defense = 8
+base_speed = 3
+metadata/_custom_type_script = "uid://djamiiplbweq2"

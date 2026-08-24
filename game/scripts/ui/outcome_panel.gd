@@ -6,7 +6,7 @@ extends PanelContainer
 @export var quit: Button
 @export var label: Label
 
-func _ready():
+func _ready() -> void:
 	# Connect signals
 	Events.on_game_over.connect(game_over)
 	Events.on_new_game_state.connect(hide)
@@ -15,6 +15,6 @@ func _ready():
 	
 	hide()
 	
-func game_over(win: bool):
+func game_over(win: bool) -> void:
 	show()
 	label.text = "You win" if win else "You lose"

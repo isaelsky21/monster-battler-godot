@@ -1,10 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://dcj3mcthwqxte"]
+[gd_scene format=3 uid="uid://dcj3mcthwqxte"]
 
 [ext_resource type="Script" uid="uid://ball7vlteiawp" path="res://scripts/ui/monster_renderer_module.gd" id="1_3kg54"]
 [ext_resource type="Theme" uid="uid://bwqrj7njjbn07" path="res://ui/main.tres" id="2_4w4es"]
 [ext_resource type="Texture2D" uid="uid://q5ukv4r8xxs1" path="res://assets/art/monsters/turtle.png" id="3_3kg54"]
 
-[node name="monster_renderer_module" type="HBoxContainer" node_paths=PackedStringArray("frame", "data_panel", "name_label", "hp_label", "hp_bar", "status_label", "sprite")]
+[node name="monster_renderer_module" type="HBoxContainer" unique_id=1696271180 node_paths=PackedStringArray("frame", "data_panel", "name_label", "hp_label", "hp_bar", "status_label", "sprite")]
 custom_minimum_size = Vector2(0, 58)
 theme = ExtResource("2_4w4es")
 script = ExtResource("1_3kg54")
@@ -16,39 +16,39 @@ hp_bar = NodePath("monster_data/hpbar")
 status_label = NodePath("monster_data/sub-hp/status")
 sprite = NodePath("frame/sprite")
 
-[node name="monster_data" type="VBoxContainer" parent="."]
+[node name="monster_data" type="VBoxContainer" parent="." unique_id=2011639389]
 layout_mode = 2
 
-[node name="name" type="Label" parent="monster_data"]
+[node name="name" type="Label" parent="monster_data" unique_id=383001158]
 texture_filter = 1
 layout_mode = 2
 text = "MONSTERNAME"
 
-[node name="hpbar" type="ProgressBar" parent="monster_data"]
+[node name="hpbar" type="ProgressBar" parent="monster_data" unique_id=427804280]
 texture_filter = 1
 custom_minimum_size = Vector2(40, 4)
 layout_mode = 2
 theme = ExtResource("2_4w4es")
 show_percentage = false
 
-[node name="sub-hp" type="HBoxContainer" parent="monster_data"]
+[node name="sub-hp" type="HBoxContainer" parent="monster_data" unique_id=159688950]
 layout_mode = 2
 
-[node name="hp" type="Label" parent="monster_data/sub-hp"]
+[node name="hp" type="Label" parent="monster_data/sub-hp" unique_id=24212246]
 texture_filter = 1
 layout_mode = 2
 text = "23/23"
 
-[node name="status" type="Label" parent="monster_data/sub-hp"]
+[node name="status" type="Label" parent="monster_data/sub-hp" unique_id=1621095699]
 texture_filter = 1
 layout_mode = 2
 text = "BRN"
 
-[node name="frame" type="Control" parent="."]
+[node name="frame" type="Control" parent="." unique_id=116233]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 
-[node name="sprite" type="Sprite2D" parent="frame"]
+[node name="sprite" type="Sprite2D" parent="frame" unique_id=220990288]
 texture_filter = 1
 position = Vector2(32, 32)
 texture = ExtResource("3_3kg54")

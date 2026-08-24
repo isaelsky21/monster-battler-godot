@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="SpeciesResource" format=3 uid="uid://bimnda0dp0oje"]
+
+[ext_resource type="Texture2D" uid="uid://cvro04fgav35p" path="res://assets/art/monsters/salamander.png" id="1_6ogee"]
+[ext_resource type="Script" uid="uid://djamiiplbweq2" path="res://scripts/content/species_resource.gd" id="2_rafwy"]
+[ext_resource type="Script" uid="uid://b8pt4buw614s3" path="res://scripts/content/move_resource.gd" id="3_tlkrm"]
+[ext_resource type="Resource" uid="uid://dyp0xona83d12" path="res://content/moves/knife_dance.tres" id="4_tjeay"]
+[ext_resource type="Resource" uid="uid://ca4tmlywk0wb2" path="res://content/moves/torch.tres" id="5_gu56f"]
+[ext_resource type="Resource" uid="uid://clixk805epr6u" path="res://content/moves/fast_attack.tres" id="6_tjeay"]
+
+[resource]
+script = ExtResource("2_rafwy")
+image = ExtResource("1_6ogee")
+species_name = "Salamander"
+starting_moves = Array[ExtResource("3_tlkrm")]([ExtResource("4_tjeay"), ExtResource("5_gu56f"), ExtResource("6_tjeay")])
+type = 2
+base_max_hp = 20
+base_attack = 7
+base_defense = 3
+base_special_attack = 3
+base_special_defense = 5
+base_speed = 70
+metadata/_custom_type_script = "uid://djamiiplbweq2"

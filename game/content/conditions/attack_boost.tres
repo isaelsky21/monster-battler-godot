@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="ConditionResource" format=3 uid="uid://55k5d731xb6o"]
+
+[ext_resource type="Script" uid="uid://bw5ule2ss55e4" path="res://scripts/content/condition_resource.gd" id="1_1amvl"]
+[ext_resource type="Script" uid="uid://bmpu62rqyon1e" path="res://scripts/content/targeted_effects/targeted_effect.gd" id="1_wldbx"]
+[ext_resource type="Script" uid="uid://dbkffsr6xek2v" path="res://scripts/content/stat_modifier.gd" id="2_v7qn6"]
+
+[sub_resource type="Resource" id="Resource_tipki"]
+script = ExtResource("2_v7qn6")
+stat = 1
+modifier = 5
+metadata/_custom_type_script = "uid://dbkffsr6xek2v"
+
+[resource]
+script = ExtResource("1_1amvl")
+condition_name = "Attack Boost"
+stat_modifiers = Array[ExtResource("2_v7qn6")]([SubResource("Resource_tipki")])
+duration = 5
+max_stacks = 3
+short_name = "ATB"
+metadata/_custom_type_script = "uid://bw5ule2ss55e4"

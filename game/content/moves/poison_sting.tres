@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="MoveResource" format=3 uid="uid://c6r72sxdkrgsn"]
+
+[ext_resource type="Script" uid="uid://b8pt4buw614s3" path="res://scripts/content/move_resource.gd" id="1_10tpj"]
+[ext_resource type="Script" uid="uid://bmpu62rqyon1e" path="res://scripts/content/targeted_effects/targeted_effect.gd" id="2_r2f12"]
+[ext_resource type="Script" uid="uid://bkdjxoradugbj" path="res://scripts/content/targeted_effects/do_damage.gd" id="3_0ifth"]
+[ext_resource type="Resource" uid="uid://c7hdrgntiidf5" path="res://content/conditions/poison.tres" id="4_uyy85"]
+[ext_resource type="Script" uid="uid://bnmjm4hngkidv" path="res://scripts/content/targeted_effects/add_condition.gd" id="5_ys806"]
+
+[sub_resource type="Resource" id="Resource_0ifth"]
+script = ExtResource("3_0ifth")
+base_damage = 4
+metadata/_custom_type_script = "uid://bkdjxoradugbj"
+
+[sub_resource type="Resource" id="Resource_uyy85"]
+script = ExtResource("5_ys806")
+condition_resource = ExtResource("4_uyy85")
+chance_to_apply = 0.4
+metadata/_custom_type_script = "uid://bnmjm4hngkidv"
+
+[resource]
+script = ExtResource("1_10tpj")
+move_name = "Poison Sting"
+max_usages = 15
+use_effects = Array[ExtResource("2_r2f12")]([SubResource("Resource_0ifth"), SubResource("Resource_uyy85")])
+metadata/_custom_type_script = "uid://b8pt4buw614s3"

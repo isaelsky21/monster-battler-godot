@@ -5,6 +5,6 @@ class_name StringEnabled
 var string: String
 var enabled: bool
 
-func _init(s, en):
+func _init(s: String, en: bool) -> void:
 	string = s
 	enabled = en
