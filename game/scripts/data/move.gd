@@ -20,6 +20,9 @@ var move_priority: int:
 var use_message: String:
 	get: return resource.use_message
 
+var use_avfx: Array[AVFXResource]:
+	get: return resource.use_avfx
+
 
 # Used for duck-typing in TargetedEffect
 func get_type() -> MonsterType.Type:

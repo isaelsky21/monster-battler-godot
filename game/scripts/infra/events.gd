@@ -22,3 +22,9 @@ signal on_monster_updated
 
 # Events sent internally
 signal request_log
+
+# Events for avfx
+signal on_avfx_block_start
+signal on_avfx_block_end
+signal on_avfx_sfx
+signal on_avfx_move

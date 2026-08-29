@@ -21,3 +21,11 @@ func add_trainer_monster_to_battle(trainer: Trainer, monster_index: int) -> void
 	var monster: Monster = trainer.monsters[monster_index]
 	trainer.active_monster_index = monster_index
 	Events.on_monster_added_to_battle.emit(monster, trainer.is_player)
+
+
+func get_next_usable_monster_index(trainer: Trainer) -> int:
+	for index: int in range(trainer.monsters.size()):
+		if trainer.monsters[index].hp > 0:
+			return index
+	
+	return -1

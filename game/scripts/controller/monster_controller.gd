@@ -4,7 +4,7 @@ var game_state: GameState
 var rng: RandomNumberGenerator
 
 
-func _init(state: GameState, random_number_generator: RandomNumberGenerator) -> void:
+func _init(state: GameState = null, random_number_generator: RandomNumberGenerator = null) -> void:
 	game_state = state
 	rng = random_number_generator
 
@@ -61,6 +61,11 @@ func use_monster_move(monster: Monster, move: Move) -> void:
 		var use_message: String = move.use_message.format({"user_name": monster.species_name, "move_name": move.move_name})
 		Events.request_log.emit(use_message)
 		
+		var opponent: Monster = get_opposing_monster(monster)
+		if opponent.hp == 0:
+			monster.move_blocked = false
+			return
+		
 		# End turn if move has been blocked by condition
 		if monster.move_blocked:
 			Events.request_log.emit("But it can't move!")
@@ -79,6 +84,8 @@ func use_monster_move(monster: Monster, move: Move) -> void:
 		if crit:
 			Events.request_log.emit("Critial hit!")
 		
+		AVFXManager.queue_avfx_effect_group(move.use_avfx, monster, game_state)
+		
 		# Show message if move doesn't hit
 		if !hit:
 			Events.request_log.emit("The move missed!")
@@ -96,6 +103,7 @@ func adjust_monster_hp(monster: Monster, amount: int) -> void:
 	
 	if monster.hp == 0:
 		faint_monster(monster)
+	
 	# Update UI
 	Events.on_monster_updated.emit(monster)
 

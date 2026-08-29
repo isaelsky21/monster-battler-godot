@@ -1,8 +1,29 @@
 [gd_resource type="Resource" script_class="MoveResource" format=3 uid="uid://xdeavx7x3eb2"]
 
 [ext_resource type="Script" uid="uid://b8pt4buw614s3" path="res://scripts/content/move_resource.gd" id="1_cfgox"]
+[ext_resource type="Script" uid="uid://cv01tthnwd0x0" path="res://scripts/avfx/avfx_resources/avfx_resource.gd" id="2_apfif"]
 [ext_resource type="Script" uid="uid://bmpu62rqyon1e" path="res://scripts/content/targeted_effects/targeted_effect.gd" id="2_rvtjr"]
+[ext_resource type="Script" uid="uid://bxl72h7cvlfm2" path="res://scripts/content/vector2_float.gd" id="3_23jds"]
 [ext_resource type="Script" uid="uid://bkdjxoradugbj" path="res://scripts/content/targeted_effects/do_damage.gd" id="3_apfif"]
+[ext_resource type="Script" uid="uid://bv3d2c7c8576n" path="res://scripts/avfx/avfx_resources/avfx_move_monster.gd" id="4_5jvuc"]
+
+[sub_resource type="Resource" id="Resource_85g3d"]
+script = ExtResource("3_23jds")
+v2 = Vector2(-20, 0)
+f = 0.05
+metadata/_custom_type_script = "uid://bxl72h7cvlfm2"
+
+[sub_resource type="Resource" id="Resource_choun"]
+script = ExtResource("3_23jds")
+v2 = Vector2(10, 0)
+f = 2.0
+metadata/_custom_type_script = "uid://bxl72h7cvlfm2"
+
+[sub_resource type="Resource" id="Resource_tipki"]
+script = ExtResource("4_5jvuc")
+offsets_by_duration = Array[ExtResource("3_23jds")]([SubResource("Resource_85g3d"), SubResource("Resource_choun")])
+target_self = true
+metadata/_custom_type_script = "uid://bv3d2c7c8576n"
 
 [sub_resource type="Resource" id="Resource_3kg54"]
 script = ExtResource("3_apfif")
@@ -15,4 +36,5 @@ move_name = "Smack"
 max_usages = 25
 use_effects = Array[ExtResource("2_rvtjr")]([SubResource("Resource_3kg54")])
 base_accuracy = 0.7
+use_avfx = Array[ExtResource("2_apfif")]([SubResource("Resource_tipki")])
 metadata/_custom_type_script = "uid://b8pt4buw614s3"

@@ -1,3 +1,4 @@
+@abstract
 class_name TargetedEffect extends Resource
 
 enum OutcomeFilter {
@@ -13,8 +14,8 @@ enum OutcomeFilter {
 
 #TODO: Make target a parameter for selecting a target in double or more battles
 #TODO: Remove duck typing from source, find alternative
-func _do(_doer: Monster, _source: Object, _is_critical: bool, _game_state: GameState, _rng: RandomNumberGenerator) -> void:
-	return
+@abstract
+func _do(_doer: Monster, _source: Object, _is_critical: bool, _game_state: GameState, _rng: RandomNumberGenerator) -> void
 
 
 func should_do(is_hit: bool, is_critical: bool) -> bool:

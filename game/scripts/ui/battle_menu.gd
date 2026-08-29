@@ -22,6 +22,8 @@ func _ready() -> void:
 	Events.on_menu_fight.connect(handle_select_fight)
 	Events.on_menu_select_monster.connect(handle_select_monsters)
 	Events.on_menu_items.connect(handle_select_items)
+	Events.on_game_over.connect(func(_b: bool) -> void: hide())
+	Events.on_new_game_state.connect(show)
 	
 	# Anytime an option is successfully selected, we want to return to main. Underscored variables ignored.
 	Events.request_option_selected.connect(func(_mode: GameRunner.INTERACTION_MODE, _index: int) -> void: handle_select_main())
