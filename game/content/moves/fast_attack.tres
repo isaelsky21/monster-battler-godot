@@ -8,6 +8,13 @@
 [ext_resource type="Script" uid="uid://bhgh21etv1u50" path="res://scripts/avfx/avfx_resources/avfx_play_sfx.gd" id="4_bstxr"]
 [ext_resource type="Script" uid="uid://bxl72h7cvlfm2" path="res://scripts/content/vector2_float.gd" id="5_bstxr"]
 [ext_resource type="Script" uid="uid://bv3d2c7c8576n" path="res://scripts/avfx/avfx_resources/avfx_move_monster.gd" id="6_xq2r4"]
+[ext_resource type="Script" uid="uid://bo8kw2et25c4l" path="res://scripts/avfx/avfx_resources/avfx_projectile.gd" id="7_xqgum"]
+[ext_resource type="Texture2D" uid="uid://cg40gg4c368yy" path="res://assets/art/projectile/projectile_default.png" id="8_fxsml"]
+[ext_resource type="PackedScene" uid="uid://cth007gwxfigl" path="res://scenes/impact_default.tscn" id="9_c6loi"]
+[ext_resource type="Script" uid="uid://dbjy5ear6fuot" path="res://scripts/avfx/avfx_resources/avfx_animation.gd" id="9_fxsml"]
+[ext_resource type="Script" uid="uid://bsn8tkyrwo24d" path="res://scripts/avfx/avfx_resources/avfx_flash_monster.gd" id="11_3bm2p"]
+[ext_resource type="Script" uid="uid://deyc3wwqi4ols" path="res://scripts/avfx/avfx_resources/avfx_flash_screen.gd" id="12_jl5pw"]
+[ext_resource type="Script" uid="uid://dw1moyrgcd2k3" path="res://scripts/avfx/avfx_resources/avfx_shake_screen.gd" id="13_qqqn7"]
 
 [sub_resource type="Resource" id="Resource_tipki"]
 script = ExtResource("4_bstxr")
@@ -32,6 +39,34 @@ offsets_by_duration = Array[ExtResource("5_bstxr")]([SubResource("Resource_85g3d
 target_self = true
 metadata/_custom_type_script = "uid://bv3d2c7c8576n"
 
+[sub_resource type="Resource" id="Resource_c6loi"]
+script = ExtResource("7_xqgum")
+sprite = ExtResource("8_fxsml")
+metadata/_custom_type_script = "uid://bo8kw2et25c4l"
+
+[sub_resource type="Resource" id="Resource_3bm2p"]
+script = ExtResource("9_fxsml")
+animation_scene = ExtResource("9_c6loi")
+target_self = true
+delay = 0.5
+metadata/_custom_type_script = "uid://dbjy5ear6fuot"
+
+[sub_resource type="Resource" id="Resource_jl5pw"]
+script = ExtResource("11_3bm2p")
+flash_values = Array[Vector2]([Vector2(0.2, 0.05), Vector2(0.6, 0.05), Vector2(0.3, 0)])
+delay = 0.5
+metadata/_custom_type_script = "uid://bsn8tkyrwo24d"
+
+[sub_resource type="Resource" id="Resource_qqqn7"]
+script = ExtResource("12_jl5pw")
+flash_values = Array[Vector2]([Vector2(0, 0.1), Vector2(0.9, 0.1), Vector2(0.2, 0.1)])
+metadata/_custom_type_script = "uid://deyc3wwqi4ols"
+
+[sub_resource type="Resource" id="Resource_2pgke"]
+script = ExtResource("13_qqqn7")
+screen_offsets_and_timings = Array[Vector3]([Vector3(5, 0, 0.05), Vector3(0, 6, 0.05), Vector3(10, 0, 0.05)])
+metadata/_custom_type_script = "uid://dw1moyrgcd2k3"
+
 [sub_resource type="Resource" id="Resource_e77o3"]
 script = ExtResource("3_fjdo5")
 base_damage = 10
@@ -43,5 +78,5 @@ move_name = "Fast Attack"
 max_usages = 10
 use_effects = Array[ExtResource("2_fjdo5")]([SubResource("Resource_e77o3")])
 move_priority = 1
-use_avfx = Array[ExtResource("2_cfn24")]([SubResource("Resource_tipki"), SubResource("Resource_xqgum")])
+use_avfx = Array[ExtResource("2_cfn24")]([SubResource("Resource_tipki"), SubResource("Resource_xqgum"), SubResource("Resource_c6loi"), SubResource("Resource_3bm2p"), SubResource("Resource_jl5pw"), SubResource("Resource_qqqn7"), SubResource("Resource_2pgke")])
 metadata/_custom_type_script = "uid://b8pt4buw614s3"

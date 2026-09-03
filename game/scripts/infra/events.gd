@@ -28,3 +28,8 @@ signal on_avfx_block_start
 signal on_avfx_block_end
 signal on_avfx_sfx
 signal on_avfx_move
+signal on_avfx_projectile
+signal on_avfx_animation
+signal on_avfx_flash_monster
+signal on_avfx_flash_screen
+signal on_avfx_shake_screen

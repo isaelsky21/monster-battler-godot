@@ -10,13 +10,13 @@
 [sub_resource type="Resource" id="Resource_85g3d"]
 script = ExtResource("3_23jds")
 v2 = Vector2(-20, 0)
-f = 0.05
+f = 0.1
 metadata/_custom_type_script = "uid://bxl72h7cvlfm2"
 
 [sub_resource type="Resource" id="Resource_choun"]
 script = ExtResource("3_23jds")
 v2 = Vector2(10, 0)
-f = 2.0
+f = 0.05
 metadata/_custom_type_script = "uid://bxl72h7cvlfm2"
 
 [sub_resource type="Resource" id="Resource_tipki"]

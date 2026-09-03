@@ -6,12 +6,13 @@
 [ext_resource type="Resource" uid="uid://dyp0xona83d12" path="res://content/moves/knife_dance.tres" id="4_tjeay"]
 [ext_resource type="Resource" uid="uid://ca4tmlywk0wb2" path="res://content/moves/torch.tres" id="5_gu56f"]
 [ext_resource type="Resource" uid="uid://clixk805epr6u" path="res://content/moves/fast_attack.tres" id="6_tjeay"]
+[ext_resource type="Resource" uid="uid://xdeavx7x3eb2" path="res://content/moves/smack.tres" id="7_gu56f"]
 
 [resource]
 script = ExtResource("2_rafwy")
 image = ExtResource("1_6ogee")
 species_name = "Salamander"
-starting_moves = Array[ExtResource("3_tlkrm")]([ExtResource("4_tjeay"), ExtResource("5_gu56f"), ExtResource("6_tjeay")])
+starting_moves = Array[ExtResource("3_tlkrm")]([ExtResource("4_tjeay"), ExtResource("5_gu56f"), ExtResource("6_tjeay"), ExtResource("7_gu56f")])
 type = 2
 base_max_hp = 20
 base_attack = 7
