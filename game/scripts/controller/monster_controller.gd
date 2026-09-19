@@ -1,4 +1,5 @@
-class_name MonsterController extends RefCounted
+class_name MonsterController
+extends RefCounted
 
 var game_state: GameState
 var rng: RandomNumberGenerator
@@ -55,11 +56,13 @@ func use_monster_move(monster: Monster, move: Move) -> void:
 	if move.usages <= 0 or monster.hp == 0:
 		return
 	
+	var logs: Array[String] = []
+	
 	# Check if there are any move usages remaining
 	if move.usages > 0:
 		# Show log message showing monster and move
 		var use_message: String = move.use_message.format({"user_name": monster.species_name, "move_name": move.move_name})
-		Events.request_log.emit(use_message)
+		logs.append(use_message)
 		
 		var opponent: Monster = get_opposing_monster(monster)
 		if opponent.hp == 0:
@@ -68,7 +71,7 @@ func use_monster_move(monster: Monster, move: Move) -> void:
 		
 		# End turn if move has been blocked by condition
 		if monster.move_blocked:
-			Events.request_log.emit("But it can't move!")
+			logs.append("But it can't move!")
 			monster.move_blocked = false
 			return
 		
@@ -78,22 +81,23 @@ func use_monster_move(monster: Monster, move: Move) -> void:
 		# Save boolean that checks if a move hits (if random number is less than
 		# base accuracy, then it hits 
 		var hit: bool = rng.randf() < move.base_accuracy
-		
 		var crit: bool = rng.randf() < Calculations.get_critical_chance(monster)
 		
-		if crit:
-			Events.request_log.emit("Critial hit!")
-		
-		AVFXManager.queue_avfx_effect_group(move.use_avfx, monster, game_state)
-		
-		# Show message if move doesn't hit
+		# Show message if move doesn't hit, same for critical hit
 		if !hit:
-			Events.request_log.emit("The move missed!")
+			logs.append("The move missed!")
+		if crit:
+			logs.append("Critial hit!")
+		
+		var message_avfx: AVFXMessages = AVFXMessages.new(logs as Array[String])
+		var avfx_group: Array[AVFXResource] = move.resource.use_avfx.duplicate()
+		avfx_group.append(message_avfx)
+		AVFXManager.queue_avfx_effect_group(avfx_group, monster, game_state)
 		
 		# If effect hits, proceed to use effect(s)
 		for effect: TargetedEffect in move.resource.use_effects:
 			if effect.should_do(hit, crit):
-				effect._do(monster, move, crit, game_state, rng)
+				effect._do(monster, move, crit, logs, game_state, rng)
 
 
 # Function to add/subtract hp to/from monster
@@ -146,9 +150,11 @@ func on_turn_begun(monster: Monster) -> void:
 	if monster.hp == 0:
 		return
 	for condition: Condition in monster.conditions:
+		var logs: Array[String] = []
+		AVFXManager.queue_avfx_effect_group(condition.resource.on_begin_turn_avfx, monster, game_state)
 		for effect in condition.resource.on_begin_turn_effects:
 			# No crits for conditions, so hardcoded as false
-			effect._do(monster, condition, false, game_state, rng)
+			effect._do(monster, condition, false, logs, game_state, rng)
 		condition.duration_remaining -= 1
 		if condition.duration_remaining <= 0:
 			end_condition(monster, condition)

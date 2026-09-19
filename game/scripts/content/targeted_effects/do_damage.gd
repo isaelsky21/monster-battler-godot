@@ -1,4 +1,5 @@
-class_name DoDamage extends TargetedEffect
+class_name DoDamage
+extends TargetedEffect
 
 @export var base_damage: int
 # For conditions that persist for multiple turns
@@ -8,7 +9,7 @@ class_name DoDamage extends TargetedEffect
 
 
 #TODO: Make target a parameter for selecting a target in double battles, and others
-func _do(doer: Monster, source: Object, is_critical: bool, game_state: GameState, rng: RandomNumberGenerator) -> void:
+func _do(doer: Monster, source: Object, is_critical: bool, logs: Array[String], game_state: GameState, rng: RandomNumberGenerator) -> void:
 	var monster_controller: MonsterController = MonsterController.new(game_state, rng)
 	var target: Monster = doer if target_self else monster_controller.get_opposing_monster(doer)
 	var type: MonsterType.Type = source.get_type() if source.has_method("get_type") else MonsterType.Type.NORMAL
@@ -25,12 +26,12 @@ func _do(doer: Monster, source: Object, is_critical: bool, game_state: GameState
 	
 	var effectiveness: MonsterType.Effectiveness = MonsterType.get_type_effectiveness(type, target.type)
 	
-	Events.request_log.emit(damage_log_string\
+	logs.append(damage_log_string\
 		.format({"doer_name": doer.species_name, "target_name": target.species_name,\
 			"amt": amount}))
 	
 	match(effectiveness):
 		MonsterType.Effectiveness.WEAK:
-			Events.request_log.emit("It was hardly effective...")
+			logs.append("It was hardly effective...")
 		MonsterType.Effectiveness.STRONG:
-			Events.request_log.emit("It was highly effective...")
+			logs.append("It was highly effective...")

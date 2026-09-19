@@ -1,4 +1,5 @@
-class_name AVFXPlaySFX extends AVFXResource
+class_name AVFXPlaySFX
+extends AVFXResource
 
 @export var clip: AudioStream
 

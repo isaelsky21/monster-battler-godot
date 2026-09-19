@@ -1,4 +1,5 @@
-class_name AVFXShakeScreen extends AVFXResource
+class_name AVFXShakeScreen
+extends AVFXResource
 
 @export var screen_offsets_and_timings: Array[Vector3]
 

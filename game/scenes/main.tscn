@@ -4,6 +4,8 @@
 [ext_resource type="Script" uid="uid://b7eoh6vvt5ick" path="res://scripts/ui/battle_renderer.gd" id="3_a8y0u"]
 [ext_resource type="PackedScene" uid="uid://dcj3mcthwqxte" path="res://scenes/mon_renderer_module.tscn" id="4_jkv2x"]
 [ext_resource type="PackedScene" uid="uid://crpahbrk5mgcm" path="res://scenes/controls_menu.tscn" id="5_choun"]
+[ext_resource type="Script" uid="uid://cs6g2x1c1mia" path="res://scripts/ui/message_panel.gd" id="5_ya4ey"]
+[ext_resource type="Script" uid="uid://ci76emsrc5mi1" path="res://scripts/ui/typeout_label.gd" id="6_eb6dy"]
 [ext_resource type="PackedScene" uid="uid://b5pwbmjdjsdbc" path="res://scenes/log.tscn" id="7_ya4ey"]
 [ext_resource type="PackedScene" uid="uid://bvnmhvojccgov" path="res://scenes/you.tscn" id="8_eb6dy"]
 [ext_resource type="FontFile" uid="uid://xj2o3brbo27g" path="res://assets/fonts/basis33.ttf" id="9_gqmmt"]
@@ -15,7 +17,7 @@
 offset = Vector2(196.46, 180)
 zoom = Vector2(2.57, 2.57)
 
-[node name="battle_renderer" type="Control" parent="." unique_id=1221504042 node_paths=PackedStringArray("player_mon_module", "enemy_mon_module", "player_mon_state_dump", "enemy_mon_state_dump")]
+[node name="battle_renderer" type="Control" parent="." unique_id=1221504042 node_paths=PackedStringArray("player_mon_module", "enemy_mon_module", "player_mon_state_dump", "enemy_mon_state_dump", "controls", "message_panel")]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 410.0
@@ -26,6 +28,8 @@ player_mon_module = NodePath("left/mon_renderer_module2")
 enemy_mon_module = NodePath("left/mon_renderer_module")
 player_mon_state_dump = NodePath("tabs/you")
 enemy_mon_state_dump = NodePath("tabs/them")
+controls = NodePath("left/controls_menu")
+message_panel = NodePath("left/message_panel")
 
 [node name="left" type="VBoxContainer" parent="battle_renderer" unique_id=703717063]
 layout_mode = 0
@@ -40,6 +44,21 @@ layout_mode = 2
 
 [node name="controls_menu" parent="battle_renderer/left" unique_id=958742562 instance=ExtResource("5_choun")]
 layout_mode = 2
+
+[node name="message_panel" type="Panel" parent="battle_renderer/left" unique_id=1209605535 node_paths=PackedStringArray("label")]
+layout_mode = 2
+script = ExtResource("5_ya4ey")
+label = NodePath("TypeoutLabel")
+
+[node name="TypeoutLabel" type="Label" parent="battle_renderer/left/message_panel" unique_id=1174539799]
+custom_maximum_size = Vector2(175, -1)
+layout_mode = 0
+offset_right = 175.0
+offset_bottom = 54.0
+text = "Venusaur uses Vine Whip! It's super effective!"
+autowrap_mode = 2
+script = ExtResource("6_eb6dy")
+metadata/_custom_type_script = "uid://ci76emsrc5mi1"
 
 [node name="tabs" type="TabContainer" parent="battle_renderer" unique_id=1432007705]
 texture_filter = 1
@@ -63,7 +82,6 @@ your_monster = true
 [node name="them" parent="battle_renderer/tabs" unique_id=327375817 instance=ExtResource("8_eb6dy")]
 visible = false
 layout_mode = 2
-your_monster = null
 metadata/_tab_index = 2
 
 [node name="outcome" parent="battle_renderer" unique_id=1342388350 instance=ExtResource("10_a8y0u")]

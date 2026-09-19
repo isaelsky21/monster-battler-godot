@@ -1,4 +1,5 @@
-class_name MonsterRendererModule extends Control
+class_name MonsterRendererModule
+extends Control
 
 # This is a UI panel that handles all visuals for a monster in the battle, 
 # including its sprite, HP bar and name
@@ -94,6 +95,11 @@ func update() -> void:
 	name_label.text = bound_monster.species_name.to_upper()
 	sprite.texture = bound_monster.image
 	hp_bar.max_value = bound_monster.max_hp
-	hp_bar.value = bound_monster.hp
+	animate_hp_bar(bound_monster.hp)
 	hp_label.text = "{hp}\\{max_hp}".format({"hp": bound_monster.hp, "max_hp": bound_monster.max_hp})
 	status_label.text = bound_monster.get_condition_string()
+
+
+func animate_hp_bar(new_hp: int) -> void:
+	var tween: Tween = get_tree().create_tween()
+	tween.tween_property(hp_bar, "value", new_hp, 0.25)

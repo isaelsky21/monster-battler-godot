@@ -1,4 +1,5 @@
-class_name AVFXInstance extends Node
+class_name AVFXInstance
+extends Node
 # Holds context like target
 
 var user: Monster

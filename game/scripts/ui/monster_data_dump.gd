@@ -1,4 +1,5 @@
-class_name MonsterDataDump extends Control
+class_name MonsterDataDump
+extends Control
 
 @export var label: Label
 @export var your_monster: bool

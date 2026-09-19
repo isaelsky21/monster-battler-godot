@@ -1,4 +1,5 @@
-class_name OptionPanel extends Control
+class_name OptionPanel
+extends Control
 
 # Option panels present a box with some number of player options. We use it here
 # to choose moves, monsters and items.

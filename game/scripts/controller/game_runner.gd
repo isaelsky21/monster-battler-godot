@@ -119,7 +119,7 @@ func handle_restart() -> void:
 func handle_run() -> void:
 	if current_phase != PHASE.AWAIT_INPUT:
 		return
-	Events.request_log.emit("You ran away!")
+	AVFXManager.queue_avfx_message("You ran away!", game_state)
 	await get_tree().create_timer(2.0).timeout
 	get_tree().quit()
 
@@ -128,7 +128,7 @@ func choose_opponent_move() -> Move:
 	# If no moves, show log and end turn
 	var legal_move_indices: Array[int] = game_state.opponent_monster.get_legal_move_indices()
 	if legal_move_indices.size() <= 0:
-		Events.request_log.emit("Out of moves. Using default.")
+		AVFXManager.queue_avfx_message("Out of moves. Using default.", game_state)
 		return game_state.opponent_monster.fallback_move
 	else:
 		# Save move index from opponent moves list

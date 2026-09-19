@@ -1,5 +1,6 @@
 @abstract
-class_name AVFXResource extends Resource
+class_name AVFXResource
+extends Resource
 
 @export var target_self: bool
 @export var delay: float

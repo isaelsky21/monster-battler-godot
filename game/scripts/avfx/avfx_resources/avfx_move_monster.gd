@@ -1,4 +1,5 @@
-class_name AVFXMoveMonster extends AVFXResource
+class_name AVFXMoveMonster
+extends AVFXResource
 
 @export var offsets_by_duration: Array[Vector2Float]
 

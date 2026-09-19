@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://djamiiplbweq2" path="res://scripts/content/species_resource.gd" id="2_rafwy"]
 [ext_resource type="Script" uid="uid://b8pt4buw614s3" path="res://scripts/content/move_resource.gd" id="3_tlkrm"]
 [ext_resource type="Resource" uid="uid://dyp0xona83d12" path="res://content/moves/knife_dance.tres" id="4_tjeay"]
-[ext_resource type="Resource" uid="uid://ca4tmlywk0wb2" path="res://content/moves/torch.tres" id="5_gu56f"]
+[ext_resource type="Resource" uid="uid://c6r72sxdkrgsn" path="res://content/moves/poison_sting.tres" id="5_gu56f"]
 [ext_resource type="Resource" uid="uid://clixk805epr6u" path="res://content/moves/fast_attack.tres" id="6_tjeay"]
 [ext_resource type="Resource" uid="uid://xdeavx7x3eb2" path="res://content/moves/smack.tres" id="7_gu56f"]
 

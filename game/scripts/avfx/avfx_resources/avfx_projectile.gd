@@ -1,4 +1,5 @@
-class_name AVFXProjectile extends AVFXResource
+class_name AVFXProjectile
+extends AVFXResource
 
 @export var sprite: Texture2D
 @export var sprite_offset: Vector2 = Vector2(32.0, 32.0)

@@ -1,4 +1,5 @@
-class_name MoveResource extends Resource
+class_name MoveResource
+extends Resource
 
 @export var move_name: String
 @export var max_usages: int

@@ -4,6 +4,8 @@ extends Control
 @export var enemy_mon_module: MonsterRendererModule
 @export var player_mon_state_dump: MonsterDataDump
 @export var enemy_mon_state_dump: MonsterDataDump
+@export var controls: Control
+@export var message_panel: MessagePanel
 
 func _ready() -> void:
 	# Connect signal listeners
@@ -26,6 +28,20 @@ func render() -> void:
 	Events.on_avfx_animation.connect(avfx_animation)
 	Events.on_avfx_flash_screen.connect(avfx_flash_screen)
 	Events.on_avfx_shake_screen.connect(avfx_shake_screen)
+	
+	Events.on_message_panel_start.connect(show_message_panel)
+	Events.on_message_panel_end.connect(hide_message_panel)
+	hide_message_panel()
+
+
+func show_message_panel() -> void:
+	message_panel.show()
+	controls.hide()
+
+
+func hide_message_panel() -> void:
+	message_panel.hide()
+	controls.show()
 
 
 func avfx_flash_screen(avfx_instance: AVFXInstance, v2s: Array[Vector2]) -> void:
@@ -49,7 +65,7 @@ func avfx_shake_screen(avfx_instance: AVFXInstance, v3s: Array[Vector3]) -> void
 		.set_delay(avfx_instance.delay)
 	
 	for v3 in v3s:
-		var v2 = Vector2(v3.x, v3.y)
+		var v2: Vector2 = Vector2(v3.x, v3.y)
 		tween.tween_property(self, "position", v2, v3.z)
 	
 	tween.tween_property(self, "position", Vector2.ZERO, 0.0)

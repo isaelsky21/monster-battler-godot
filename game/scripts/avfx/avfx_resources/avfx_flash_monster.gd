@@ -1,4 +1,5 @@
-class_name AVFXFlashMonster extends AVFXResource
+class_name AVFXFlashMonster
+extends AVFXResource
 
 @export var flash_values: Array[Vector2]
 

@@ -10,7 +10,7 @@
 [ext_resource type="Script" uid="uid://bv3d2c7c8576n" path="res://scripts/avfx/avfx_resources/avfx_move_monster.gd" id="6_xq2r4"]
 [ext_resource type="Script" uid="uid://bo8kw2et25c4l" path="res://scripts/avfx/avfx_resources/avfx_projectile.gd" id="7_xqgum"]
 [ext_resource type="Texture2D" uid="uid://cg40gg4c368yy" path="res://assets/art/projectile/projectile_default.png" id="8_fxsml"]
-[ext_resource type="PackedScene" uid="uid://cth007gwxfigl" path="res://scenes/impact_default.tscn" id="9_c6loi"]
+[ext_resource type="PackedScene" uid="uid://cth007gwxfigl" path="res://scenes/animations/impact_default.tscn" id="9_c6loi"]
 [ext_resource type="Script" uid="uid://dbjy5ear6fuot" path="res://scripts/avfx/avfx_resources/avfx_animation.gd" id="9_fxsml"]
 [ext_resource type="Script" uid="uid://bsn8tkyrwo24d" path="res://scripts/avfx/avfx_resources/avfx_flash_monster.gd" id="11_3bm2p"]
 [ext_resource type="Script" uid="uid://deyc3wwqi4ols" path="res://scripts/avfx/avfx_resources/avfx_flash_screen.gd" id="12_jl5pw"]

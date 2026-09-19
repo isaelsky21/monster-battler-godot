@@ -1,4 +1,5 @@
-class_name TrainerController extends RefCounted
+class_name TrainerController
+extends RefCounted
 
 var game_state: GameState
 var rng: RandomNumberGenerator

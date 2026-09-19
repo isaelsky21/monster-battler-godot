@@ -15,6 +15,9 @@ func _ready() -> void:
 	timeout_timer.wait_time = MAX_GROUP_TIMEOUT
 	timeout_timer.timeout.connect(timeout_current_group)
 	timeout_timer.one_shot = true
+	
+	Events.on_message_panel_start.connect(func() -> void: timeout_timer.paused = true)
+	Events.on_message_panel_end.connect(func() -> void: timeout_timer.paused = false)
 
 
 func _process(_delta: float) -> void:
@@ -33,19 +36,31 @@ func _process(_delta: float) -> void:
 			call_deferred("emit_block_start")
 
 
+func queue_avfx_message(message: String, game_state: GameState) -> void:
+	var messages: AVFXMessages = AVFXMessages.new([message] as Array[String])
+	queue_avfx_effect_group([messages], null, game_state)
+
+
 # Add effect to the list
 func queue_avfx_effect_group(resources: Array[AVFXResource], monster: Monster, game_state: GameState) -> void:
 	active = true
 	var group: Node = Node.new()
 	add_child(group)
-	effect_group_queue.append(group)
 	for resource: AVFXResource in resources:
+		# Prevent intanciating a null resource
+		if resource == null:
+			continue
 		var monster_controller: MonsterController = MonsterController.new(game_state)
 		var target: Monster = monster_controller.get_opposing_monster(monster)
 		
 		var instance: AVFXInstance = resource.generate(monster, target)
 		group.add_child(instance)
 		instance.name = resource.get_script().get_global_name()
+	
+	if group.get_children().size() > 0:
+		effect_group_queue.append(group)
+	else:
+		group.queue_free()
 
 
 # Delayed function to block input while animation plays
@@ -72,4 +87,5 @@ func timeout_current_group() -> void:
 		if child.has_method("finish"):
 			child.finish()
 	
+	current_effect_group.queue_free()
 	current_effect_group = null
