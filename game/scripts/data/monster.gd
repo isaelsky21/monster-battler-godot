@@ -14,7 +14,6 @@ var conditions: Array[Condition]
 # Ephemeral state, cleared after each turn
 # Move successfully blocked by condition
 var move_blocked: bool
-var chosen_move: Move
 
 # Getters
 var image: Texture2D:

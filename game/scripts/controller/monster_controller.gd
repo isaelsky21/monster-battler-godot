@@ -48,6 +48,8 @@ func get_opposing_monster(monster: Monster) -> Monster:
 
 
 func get_monster_move_at_index(monster: Monster, index: int) -> Move:
+	if index == -1:
+		return monster.fallback_move
 	return monster.moves[index]
 
 
@@ -138,12 +140,6 @@ func end_condition(monster: Monster, condition: Condition) -> void:
 	
 	# Update UI
 	Events.on_monster_updated.emit(monster)
-
-
-func do_monster_turn(monster: Monster) -> void:
-	on_turn_begun(monster)
-	use_monster_move(monster, monster.chosen_move)
-	monster.chosen_move = null
 
 
 func on_turn_begun(monster: Monster) -> void:

@@ -22,5 +22,6 @@ script = ExtResource("1_yh6g2")
 move_name = "Struggle"
 max_usages = 999
 use_effects = Array[ExtResource("2_1hdul")]([SubResource("Resource_3kg54"), SubResource("Resource_yh6g2")])
+use_message = "{user_name} is out of moves! {user_name} used {move_name}"
 base_accuracy = 1.0
 metadata/_custom_type_script = "uid://b8pt4buw614s3"

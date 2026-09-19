@@ -5,7 +5,7 @@ extends TargetedEffect
 
 
 #TODO: Make target a parameter for selecting a target in double battles, and others
-func _do(doer: Monster, _source: Object, is_critical: bool, logs: Array[String], game_state: GameState, rng: RandomNumberGenerator) -> void:
+func _do(doer: Monster, _source: Object, _is_critical: bool, logs: Array[String], game_state: GameState, rng: RandomNumberGenerator) -> void:
 	var monster_controller: MonsterController = MonsterController.new(game_state, rng)
 	var target: Monster = doer if target_self else monster_controller.get_opposing_monster(doer)
 	
