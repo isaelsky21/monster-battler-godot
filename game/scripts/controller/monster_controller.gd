@@ -15,6 +15,12 @@ func create_monster(species: SpeciesResource, nickname: String = "") -> Monster:
 	monster.species = species
 	monster.hp = species.base_max_hp
 	monster.nickname = nickname
+	monster.hp_growth = rng.randf_range(0.4, 1.2)
+	monster.attack_growth = rng.randf_range(0.4, 1.2)
+	monster.defense_growth = rng.randf_range(0.4, 1.2)
+	monster.special_attack_growth = rng.randf_range(0.4, 1.2)
+	monster.special_defense_growth = rng.randf_range(0.4, 1.2)
+	monster.speed_growth = rng.randf_range(0.4, 1.2)
 	
 	for move_resource: MoveResource in species.starting_moves:
 		if move_resource == null:
@@ -154,3 +160,23 @@ func on_turn_begun(monster: Monster) -> void:
 		condition.duration_remaining -= 1
 		if condition.duration_remaining <= 0:
 			end_condition(monster, condition)
+
+
+func add_experience_to_monster(monster: Monster, experience: int) -> void:
+	monster.experience += experience
+	
+	for index in range(monster.level, monster.max_level):
+		var required_experience: int = Calculations.experience_for_level(monster.level)
+		if monster.experience >= required_experience:
+			monster.experience -= required_experience
+			level_up_monster(monster)
+			Events.on_monster_updated.emit(monster)
+		else:
+			break
+
+
+func level_up_monster(monster: Monster) -> void:
+	monster.level += 1
+	AVFXManager.queue_avfx_message("{monster_name} leveled up to level {level}"\
+	.format({"monster_name": monster.nickname, "level": monster.level}), game_state)
+	#TODO: Handle move learning down here!

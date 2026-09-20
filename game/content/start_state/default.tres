@@ -1,0 +1,75 @@
+[gd_resource type="Resource" script_class="StartState" format=3 uid="uid://dr2tqa6bht3ty"]
+
+[ext_resource type="Script" uid="uid://dmorj7pdqbxb8" path="res://scripts/content/start_states/item_start_state.gd" id="1_lcie8"]
+[ext_resource type="Script" uid="uid://cep6gcct6y22" path="res://scripts/content/start_states/start_state.gd" id="1_xtyxf"]
+[ext_resource type="Resource" uid="uid://c6hqbs1e5stcq" path="res://content/items/potion.tres" id="2_sqlun"]
+[ext_resource type="Script" uid="uid://vggpohkhd40y" path="res://scripts/content/start_states/monster_start_state.gd" id="2_t8c35"]
+[ext_resource type="Script" uid="uid://btf355hcs3vyn" path="res://scripts/content/start_states/trainer_start_state.gd" id="3_xehwm"]
+[ext_resource type="Resource" uid="uid://bsx0npq2xhugq" path="res://content/species/dino.tres" id="4_438cl"]
+[ext_resource type="Resource" uid="uid://bimnda0dp0oje" path="res://content/species/salamander.tres" id="5_8dnqy"]
+[ext_resource type="Resource" uid="uid://buxaciimd6ihy" path="res://content/species/turtle.tres" id="7_i3l1s"]
+
+[sub_resource type="Resource" id="Resource_xpg6v"]
+script = ExtResource("1_lcie8")
+resource = ExtResource("2_sqlun")
+quantity = 2
+metadata/_custom_type_script = "uid://dmorj7pdqbxb8"
+
+[sub_resource type="Resource" id="Resource_p5cfw"]
+script = ExtResource("2_t8c35")
+species = ExtResource("4_438cl")
+level = 3
+metadata/_custom_type_script = "uid://vggpohkhd40y"
+
+[sub_resource type="Resource" id="Resource_ghev2"]
+script = ExtResource("2_t8c35")
+species = ExtResource("5_8dnqy")
+level = 2
+metadata/_custom_type_script = "uid://vggpohkhd40y"
+
+[sub_resource type="Resource" id="Resource_yriof"]
+script = ExtResource("3_xehwm")
+trainer_name = "OpponentName"
+monsters = Array[ExtResource("2_t8c35")]([SubResource("Resource_p5cfw"), SubResource("Resource_ghev2")])
+items = Array[ExtResource("1_lcie8")]([SubResource("Resource_xpg6v")])
+metadata/_custom_type_script = "uid://btf355hcs3vyn"
+
+[sub_resource type="Resource" id="Resource_i3l1s"]
+script = ExtResource("1_lcie8")
+resource = ExtResource("2_sqlun")
+quantity = 3
+metadata/_custom_type_script = "uid://dmorj7pdqbxb8"
+
+[sub_resource type="Resource" id="Resource_7avhh"]
+script = ExtResource("2_t8c35")
+nickname = "Diva"
+species = ExtResource("4_438cl")
+level = 4
+metadata/_custom_type_script = "uid://vggpohkhd40y"
+
+[sub_resource type="Resource" id="Resource_438cl"]
+script = ExtResource("2_t8c35")
+nickname = "CharChar"
+species = ExtResource("5_8dnqy")
+level = 3
+metadata/_custom_type_script = "uid://vggpohkhd40y"
+
+[sub_resource type="Resource" id="Resource_8dnqy"]
+script = ExtResource("2_t8c35")
+nickname = "Squerol"
+species = ExtResource("7_i3l1s")
+level = 2
+metadata/_custom_type_script = "uid://vggpohkhd40y"
+
+[sub_resource type="Resource" id="Resource_stkwj"]
+script = ExtResource("3_xehwm")
+trainer_name = "PlayerName"
+monsters = Array[ExtResource("2_t8c35")]([SubResource("Resource_7avhh"), SubResource("Resource_438cl"), SubResource("Resource_8dnqy")])
+items = Array[ExtResource("1_lcie8")]([SubResource("Resource_i3l1s")])
+metadata/_custom_type_script = "uid://btf355hcs3vyn"
+
+[resource]
+script = ExtResource("1_xtyxf")
+player_start_state = SubResource("Resource_stkwj")
+opponent_start_state = SubResource("Resource_yriof")
+metadata/_custom_type_script = "uid://cep6gcct6y22"

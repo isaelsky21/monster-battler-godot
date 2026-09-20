@@ -61,23 +61,9 @@ func set_up_model() -> void:
 	monster_controller = MonsterController.new(game_state, rng)
 	trainer_controller = TrainerController.new(monster_controller, game_state, rng)
 	
-	var species_salamander: Resource = preload("res://content/species/salamander.tres")
-	var species_turtle: Resource = preload("res://content/species/turtle.tres")
-	var species_dino: Resource = preload("res://content/species/dino.tres")
+	var start_state: Resource = preload("res://content/start_state/default.tres")
 	
-	var monster1: Monster = monster_controller.create_monster(species_salamander, "CharChar")
-	var monster2: Monster = monster_controller.create_monster(species_turtle, "Squerol")
-	var monster3: Monster = monster_controller.create_monster(species_dino, "Diva")
-	
-	game_state.player = trainer_controller.create_trainer([monster1, monster3], true)
-	game_state.opponent = trainer_controller.create_trainer([monster2])
-	# Temp names
-	game_state.player.trainer_name = "Red"
-	game_state.opponent.trainer_name = "Blue"
-	
-	var item_resource: ItemResource = preload("res://content/items/potion.tres")
-	trainer_controller.add_item(game_state.player, item_resource, 2)
-	trainer_controller.add_item(game_state.player, item_resource, 1)
+	generate_state_from_start_state(start_state)
 	
 	# Re-enables buttons
 	current_phase = PHASE.AWAIT_INPUT
@@ -86,6 +72,11 @@ func set_up_model() -> void:
 	# Play sound when entering battle
 	#var clip: Resource = preload("res://assets/sound/Game_SFX_by_OwlishMedia/birdchirp2.wav")
 	#Events.on_avfx_sfx.emit(clip)
+
+
+func generate_state_from_start_state(start_state: StartState) -> void:
+	game_state.player = start_state.player_start_state.generate_trainer(true, monster_controller, game_state, rng)
+	game_state.opponent = start_state.opponent_start_state.generate_trainer(false, monster_controller, game_state, rng)
 
 
 func handle_request_menu_fight() -> void:
@@ -172,6 +163,7 @@ func resolve_round() -> void:
 		trainer_controller.do_trainer_turn(game_state.player)
 	
 	if game_state.player_monster.hp == 0:
+		monster_controller.add_experience_to_monster(game_state.opponent_monster, Calculations.monster_experience_yield(game_state.player_monster))
 		var next_index: int = trainer_controller.get_next_usable_monster_index(game_state.player)
 		if next_index == -1:
 			current_phase = PHASE.GAME_OVER
@@ -179,6 +171,7 @@ func resolve_round() -> void:
 		else:
 			trainer_controller.set_add_trainer_monster_to_battle(game_state.player, next_index)
 	if game_state.opponent_monster.hp == 0:
+		monster_controller.add_experience_to_monster(game_state.player_monster, Calculations.monster_experience_yield(game_state.opponent_monster))
 		var next_index: int = trainer_controller.get_next_usable_monster_index(game_state.opponent)
 		if next_index == -1:
 			current_phase = PHASE.GAME_OVER

@@ -6,6 +6,7 @@ extends Resource
 @export var starting_moves: Array[MoveResource]
 @export var type: MonsterType.Type
 
+@export var base_max_level: int = 100
 @export var base_max_hp: int
 @export var base_attack: int
 @export var base_defense: int

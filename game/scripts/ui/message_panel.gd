@@ -3,6 +3,7 @@ extends Panel
 
 @export var label: TypeoutLabel
 @export var message_queue: Array[String] = []
+@export var instance_queue: Array[AVFXInstance] = []
 
 var current_message: String = ""
 var current_instance: AVFXInstance
@@ -20,12 +21,10 @@ func _input(event: InputEvent) -> void:
 
 func queue_messages(instance: AVFXInstance, messages: Array[String]) -> void:
 	Events.on_message_panel_start.emit()
-	for message: String in messages:
-		message_queue.append(message)
-	
-	current_instance = instance
-	
-	show_message(message_queue.pop_front())
+	if current_instance == null:
+		run_instance(instance)
+	else:
+		instance_queue.append(instance)
 
 
 func show_message(message: String) -> void:
@@ -37,8 +36,23 @@ func dismiss_message() -> void:
 	current_message = ""
 	
 	if message_queue.size() == 0:
-		current_instance.finish()
-		current_instance = null
-		Events.on_message_panel_end.emit()
+		if current_instance != null:
+			current_instance.finish()
+			current_instance = null
+			
+			if instance_queue.size() > 0:
+				run_instance(instance_queue.pop_front())
+			else:
+				Events.on_message_panel_end.emit()
 	else:
+		show_message(message_queue.pop_front())
+
+
+func run_instance(instance: AVFXInstance) -> void:
+	current_instance = instance
+	message_queue = []
+	for message in instance.resource.messages:
+		message_queue.append(message)
+	
+	if current_message == "":
 		show_message(message_queue.pop_front())

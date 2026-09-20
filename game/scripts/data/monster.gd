@@ -4,12 +4,24 @@ var species: SpeciesResource
 var nickname: String
 # Monster hitpoints
 var hp: int
+# Total experience
+var experience: int
+# Current level
+var level: int = 1
 # List of moves the monster knows
 var moves: Array[Move] = []
 # Move used when out of moves
 var fallback_move: Move
 # List of conditions applied to monster
 var conditions: Array[Condition]
+
+# Stat changes based on levels attained
+var hp_growth: float
+var attack_growth: float
+var defense_growth: float
+var special_attack_growth: float
+var special_defense_growth: float
+var speed_growth: float
 
 # Ephemeral state, cleared after each turn
 # Move successfully blocked by condition
@@ -25,26 +37,35 @@ var species_name: String:
 var type: MonsterType.Type:
 	get: return species.type
 
+var max_level: int:
+	get: return species.base_max_level
+
 var max_hp: int:
-	get: return clamp(species.base_max_hp + sum_condition_stats_for_code(Stat.Code.MAX_HP), 1, 999)
+	get: return Calculations.calculate_monster_stat(species.base_max_hp,\
+	hp_growth, level, sum_condition_stats_for_code(Stat.Code.MAX_HP))
 
 var attack: int:
-	get: return clamp(species.base_attack + sum_condition_stats_for_code(Stat.Code.ATK), 1, 999)
+	get: return Calculations.calculate_monster_stat(species.base_attack,\
+	attack_growth, level, sum_condition_stats_for_code(Stat.Code.ATK))
 
 var defense: int:
-	get: return clamp(species.base_defense + sum_condition_stats_for_code(Stat.Code.DEF), 1, 999)
+	get: return Calculations.calculate_monster_stat(species.base_defense,\
+	defense_growth, level, sum_condition_stats_for_code(Stat.Code.DEF))
 
 var special_attack: int:
-	get: return clamp(species.base_special_attack + sum_condition_stats_for_code(Stat.Code.SPATK), 1, 999)
+	get: return Calculations.calculate_monster_stat(species.base_special_attack,\
+	special_attack_growth, level, sum_condition_stats_for_code(Stat.Code.SPATK))
 
 var special_defense: int:
-	get: return clamp(species.base_special_defense + sum_condition_stats_for_code(Stat.Code.SPDEF), 1, 999)
+	get: return Calculations.calculate_monster_stat(species.base_special_defense,\
+	special_defense_growth, level, sum_condition_stats_for_code(Stat.Code.SPDEF))
 
 var speed: int:
-	get: return clamp(species.base_speed + sum_condition_stats_for_code(Stat.Code.SPD), 1, 999)
+	get: return Calculations.calculate_monster_stat(species.base_speed,\
+	speed_growth, level, sum_condition_stats_for_code(Stat.Code.SPD))
 
 
-# Go through moves list, add usable moves to variable and return
+# Go through moves list, add usable moves to variable, and return
 func get_legal_move_indices() -> Array[int]:
 	var legal_indices: Array[int]
 	
