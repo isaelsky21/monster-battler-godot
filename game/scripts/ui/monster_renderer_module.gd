@@ -4,48 +4,39 @@ extends Control
 # This is a UI panel that handles all visuals for a monster in the battle, 
 # including its sprite, HP bar and name
 
-@export 
-var your_pov: bool
+# If true, this is the player's renderer module, else opponent
+@export var your_pov: bool
 
-@export 
-var frame: Control
+# Frame holds monster sprite
+@export var frame: Control
+@export var sprite: Sprite2D
 
-@export
-var data_panel: Control
+# Data panel holds the rest as children
+@export var data_panel: Control
+@export var name_label: Label
+@export var hp_label: Label
+@export var hp_bar: ProgressBar
+@export var status_label: Label
 
-@export
-var name_label: Label
-
-@export
-var hp_label: Label
-
-@export 
-var hp_bar: ProgressBar
-
-@export
-var status_label: Label
-
-@export
-var sprite: Sprite2D
-
-var bound_monster: Monster
+# Monster that needs updating
+var _bound_monster: Monster
 
 
 func connect_events() -> void:
-	Events.on_monster_updated.connect(maybe_update_monster)
+	Events.on_monster_updated.connect(update_monster_data)
 	Events.on_monster_added_to_battle.connect(maybe_bind_monster)
 	Events.on_avfx_move.connect(move_monster)
 	Events.on_avfx_flash_monster.connect(flash_monster)
 
 
-func maybe_update_monster(monster: Monster) -> void:
-	if monster == bound_monster:
+func update_monster_data(monster: Monster) -> void:
+	if monster == _bound_monster:
 		update()
 
 
 func maybe_bind_monster(monster: Monster, is_player_monster: bool) -> void:
 	if your_pov == is_player_monster:
-		bound_monster = monster
+		_bound_monster = monster
 		# Move child node to top if player, so it shows left of UI
 		move_child(frame, 0 if is_player_monster else 1)
 		update()
@@ -54,7 +45,7 @@ func maybe_bind_monster(monster: Monster, is_player_monster: bool) -> void:
 # Animate monster when attacking
 func move_monster(avfx_instance: AVFXInstance, v2fs: Array[Vector2Float]) -> void:
 	var avfx_target: Monster = avfx_instance.user if avfx_instance.resource.target_self else avfx_instance.target
-	if avfx_target != bound_monster:
+	if avfx_target != _bound_monster:
 		avfx_instance.finish()
 		return
 	
@@ -73,7 +64,7 @@ func move_monster(avfx_instance: AVFXInstance, v2fs: Array[Vector2Float]) -> voi
 
 func flash_monster(avfx_instance: AVFXInstance, v2s: Array[Vector2]) -> void:
 	var avfx_target: Monster = avfx_instance.user if avfx_instance.target_self else avfx_instance.target
-	if avfx_target != bound_monster:
+	if avfx_target != _bound_monster:
 		avfx_instance.finish()
 		return
 	
@@ -91,15 +82,15 @@ func flash_monster(avfx_instance: AVFXInstance, v2s: Array[Vector2]) -> void:
 
 
 func update() -> void:
-	if bound_monster == null:
+	if _bound_monster == null:
 		return
 	
-	name_label.text = bound_monster.species_name.to_upper()
-	sprite.texture = bound_monster.image
-	hp_bar.max_value = bound_monster.max_hp
-	animate_hp_bar(bound_monster.hp)
-	hp_label.text = "{hp}\\{max_hp}".format({"hp": bound_monster.hp, "max_hp": bound_monster.max_hp})
-	status_label.text = bound_monster.get_condition_string()
+	name_label.text = _bound_monster.species_name.to_upper()
+	sprite.texture = _bound_monster.image
+	hp_bar.max_value = _bound_monster.max_hp
+	animate_hp_bar(_bound_monster.hp)
+	hp_label.text = "{hp}\\{max_hp}".format({"hp": _bound_monster.hp, "max_hp": _bound_monster.max_hp})
+	status_label.text = _bound_monster.get_condition_string()
 
 
 func animate_hp_bar(new_hp: int) -> void:

@@ -1,6 +1,5 @@
 extends Node
-
-# The main script that controls the flow of the game.
+## The main script that controls the flow of the game.
 
 # INTERACTION_MODE encodes the menu states the main battle menu can be in.
 # Since RUN isn't a special menu, it does not get an entry here
@@ -37,10 +36,10 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
 	if current_phase == PHASE.AWAIT_INPUT:
-		# Player uses a move
+		# Player performs an action
 		if game_state.player.chosen_action_type != INTERACTION_MODE.NONE:
 			current_phase = PHASE.RESOLVE_ROUND
-		# Opponent uses a move
+		# Opponent performs an action
 		if game_state.opponent.chosen_action_type == INTERACTION_MODE.NONE:
 			choose_opponent_move()
 	elif current_phase == PHASE.RESOLVE_ROUND:
@@ -173,11 +172,16 @@ func resolve_round() -> void:
 		trainer_controller.do_trainer_turn(game_state.player)
 	
 	var quit_choice: ChoiceResource = ChoiceResource.new("> Quit", handle_quit)
-	var restart_choice: ChoiceResource = ChoiceResource.new("> Restart", handle_restart)
+	var restart_choice: ChoiceResource =\
+		ChoiceResource.new("> Restart", handle_restart)
 	
 	if game_state.player_monster.hp == 0:
-		monster_controller.add_experience_to_monster(game_state.opponent_monster, Calculations.monster_experience_yield(game_state.player_monster))
-		var next_index: int = trainer_controller.get_next_usable_monster_index(game_state.player)
+		monster_controller.add_experience_to_monster(\
+			game_state.opponent_monster,\
+			Calculations.monster_experience_yield(\
+			game_state.player_monster
+		))
+		var next_index: int = (trainer_controller.get_next_usable_monster_index(game_state.player))
 		if next_index == -1:
 			current_phase = PHASE.GAME_OVER
 			Events.on_game_over.emit(false)
@@ -212,8 +216,10 @@ func does_player_go_first() -> bool:
 		or game_state.opponent.chosen_action_type == INTERACTION_MODE.MON:
 			return true
 	
-	var player_move: Move = monster_controller.get_monster_move_at_index(game_state.player.active_monster, game_state.player.chosen_action_index)
-	var opponent_move: Move = monster_controller.get_monster_move_at_index(game_state.opponent.active_monster, game_state.opponent.chosen_action_index)
+	var player_move: Move = monster_controller.get_monster_move_at_index(\
+	game_state.player.active_monster, game_state.player.chosen_action_index)
+	var opponent_move: Move = monster_controller.get_monster_move_at_index(\
+	game_state.opponent.active_monster, game_state.opponent.chosen_action_index)
 	
 	if player_move.move_priority > opponent_move.move_priority:
 		return true
@@ -228,7 +234,8 @@ func handle_avfx_function(instance: AVFXInstance, function: Callable) -> void:
 		call_avfx_function(instance, function)
 	else:
 		await get_tree().create_timer(instance.delay)\
-			.timeout.connect(func() -> void: call_avfx_function(instance, function))
+			.timeout.connect(func() -> void:\
+				call_avfx_function(instance, function))
 
 
 func call_avfx_function(instance: AVFXInstance, function: Callable) -> void:

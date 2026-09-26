@@ -10,11 +10,11 @@ var bound_monster: Monster
 # UI handlers. Don't ship a game with something ugly like this.
 
 func connect_events() -> void:
-	Events.on_monster_updated.connect(maybe_update_monster)
+	Events.on_monster_updated.connect(update_monster_data)
 	Events.on_monster_added_to_battle.connect(maybe_bind_monster)
 
 
-func maybe_update_monster(monster: Monster) -> void:
+func update_monster_data(monster: Monster) -> void:
 	if monster == bound_monster:
 		update()
 
