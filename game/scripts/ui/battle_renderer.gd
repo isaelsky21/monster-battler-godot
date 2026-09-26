@@ -1,29 +1,25 @@
 extends Control
 
-@export var player_mon_module: MonsterRendererModule
-@export var enemy_mon_module: MonsterRendererModule
-@export var player_mon_state_dump: MonsterDataDump
-@export var enemy_mon_state_dump: MonsterDataDump
-@export var controls: Control
+# Holds UI information about the monster such as HP, image, name
+@export var player_monster_module: MonsterRendererModule
+@export var opponent_monster_module: MonsterRendererModule
+
+# Control nodes for each monster to show logs
+@export var player_monster_state_dump: MonsterDataDump
+@export var opponent_monster_state_dump: MonsterDataDump
+
+@export var controls_menu: Control
 @export var message_panel: MessagePanel
 @export var move_replace_panel: OptionPanel
 
+
 func _ready() -> void:
-	# Connect signal listeners
-	Events.on_battle_is_setup.connect(render)
-	Events.on_battle_is_setup.emit()
+	player_monster_module.your_pov = true
 	
-	# Once listeners are connected, we need to emit an event to unblock gameplay
-	Events.on_ui_ready.emit()
-	
-	
-func render() -> void:
-	player_mon_module.your_pov = true
-	
-	player_mon_module.connect_events()
-	enemy_mon_module.connect_events()
-	player_mon_state_dump.connect_events()
-	enemy_mon_state_dump.connect_events()
+	player_monster_module.connect_events()
+	opponent_monster_module.connect_events()
+	player_monster_state_dump.connect_events()
+	opponent_monster_state_dump.connect_events()
 	
 	Events.on_avfx_projectile.connect(avfx_projectile)
 	Events.on_avfx_animation.connect(avfx_animation)
@@ -35,30 +31,33 @@ func render() -> void:
 	Events.on_player_pending_learn_move.connect(show_learn_move_panel)
 	Events.on_player_move_replace_completed.connect(hide_learn_move_panel)
 	hide_message_panel()
+	
+	# Once listeners are connected, we need to emit an event to unblock gameplay
+	Events.on_ui_ready.emit()
 
 
 func show_message_panel() -> void:
 	message_panel.show()
-	controls.hide()
+	controls_menu.hide()
 	move_replace_panel.hide()
 
 
 func hide_message_panel() -> void:
 	message_panel.hide()
-	controls.show()
+	controls_menu.show()
 	move_replace_panel.hide()
 
 
 func show_learn_move_panel(labels: Array[StringEnabled]) -> void:
 	move_replace_panel.show()
 	message_panel.hide()
-	controls.hide()
+	controls_menu.hide()
 	move_replace_panel.populate(labels)
 
 
 func hide_learn_move_panel() -> void:
 	move_replace_panel.hide()
-	controls.show()
+	controls_menu.show()
 
 
 func avfx_flash_screen(avfx_instance: AVFXInstance, v2s: Array[Vector2]) -> void:
@@ -145,10 +144,10 @@ func do_avfx_animation(instance: AVFXInstance, animation_scene: PackedScene) -> 
 
 
 func get_monster_frame(monster: Monster) -> Control:
-	if player_mon_module.bound_monster == monster:
-		return player_mon_module.frame
-	elif enemy_mon_module.bound_monster == monster:
-		return enemy_mon_module.frame
+	if player_monster_module.bound_monster == monster:
+		return player_monster_module.frame
+	elif opponent_monster_module.bound_monster == monster:
+		return opponent_monster_module.frame
 	return null
 
 

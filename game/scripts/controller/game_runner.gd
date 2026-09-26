@@ -27,6 +27,7 @@ func _ready() -> void:
 	Events.request_option_selected.connect(handle_menu_option_selected)
 	Events.request_restart.connect(handle_restart)
 	Events.request_quit.connect(handle_run)
+	
 	Events.on_avfx_block_start.connect(func() -> void: current_phase = PHASE.AWAIT_AVFX)
 	Events.on_avfx_block_end.connect(func() -> void: current_phase = PHASE.AWAIT_INPUT)
 	Events.on_avfx_function.connect(handle_avfx_function)
@@ -89,7 +90,7 @@ func handle_request_menu_fight() -> void:
 		var label: StringEnabled = StringEnabled.new(move.resource.move_name, move.usages > 0)
 		labels.append(label)
 	
-	if labels.any(func(label: StringEnabled): return label.enabled):
+	if labels.any(func(label: StringEnabled) -> bool: return label.enabled):
 		Events.on_menu_fight.emit(labels)
 	else:
 		# Fall back to default move

@@ -17,18 +17,18 @@
 offset = Vector2(196.46, 180)
 zoom = Vector2(2.57, 2.57)
 
-[node name="battle_renderer" type="Control" parent="." unique_id=1221504042 node_paths=PackedStringArray("player_mon_module", "enemy_mon_module", "player_mon_state_dump", "enemy_mon_state_dump", "controls", "message_panel", "move_replace_panel")]
+[node name="battle_renderer" type="Control" parent="." unique_id=1221504042 node_paths=PackedStringArray("player_monster_module", "opponent_monster_module", "player_monster_state_dump", "opponent_monster_state_dump", "controls_menu", "message_panel", "move_replace_panel")]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 410.0
 offset_bottom = 178.0
 theme = ExtResource("2_trceg")
 script = ExtResource("3_a8y0u")
-player_mon_module = NodePath("left/mon_renderer_module2")
-enemy_mon_module = NodePath("left/mon_renderer_module")
-player_mon_state_dump = NodePath("tabs/you")
-enemy_mon_state_dump = NodePath("tabs/them")
-controls = NodePath("left/controls_menu")
+player_monster_module = NodePath("left/player_monster_renderer_module")
+opponent_monster_module = NodePath("left/opponent_monster_renderer_module")
+player_monster_state_dump = NodePath("tabs/you")
+opponent_monster_state_dump = NodePath("tabs/them")
+controls_menu = NodePath("left/controls_menu")
 message_panel = NodePath("left/message_panel")
 move_replace_panel = NodePath("left/move_select_panel")
 
@@ -37,10 +37,10 @@ layout_mode = 0
 offset_right = 148.0
 offset_bottom = 164.0
 
-[node name="mon_renderer_module" parent="battle_renderer/left" unique_id=1040930189 instance=ExtResource("4_jkv2x")]
+[node name="opponent_monster_renderer_module" parent="battle_renderer/left" unique_id=1040930189 instance=ExtResource("4_jkv2x")]
 layout_mode = 2
 
-[node name="mon_renderer_module2" parent="battle_renderer/left" unique_id=1629017970 instance=ExtResource("4_jkv2x")]
+[node name="player_monster_renderer_module" parent="battle_renderer/left" unique_id=1629017970 instance=ExtResource("4_jkv2x")]
 layout_mode = 2
 
 [node name="controls_menu" parent="battle_renderer/left" unique_id=958742562 instance=ExtResource("5_choun")]

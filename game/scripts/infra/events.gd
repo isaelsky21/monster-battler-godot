@@ -9,8 +9,7 @@ signal request_menu_monsters
 signal request_menu_back
 signal request_menu_items
 
-# Events sent from controllers 
-signal on_battle_is_setup
+# Events sent from controllers
 signal on_ui_ready
 signal on_new_game_state
 signal on_game_over
