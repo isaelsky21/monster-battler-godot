@@ -27,7 +27,7 @@ metadata/_custom_type_script = "uid://bv3d2c7c8576n"
 
 [sub_resource type="Resource" id="Resource_3kg54"]
 script = ExtResource("3_apfif")
-base_damage = 12
+base_damage = 2
 metadata/_custom_type_script = "uid://bkdjxoradugbj"
 
 [resource]

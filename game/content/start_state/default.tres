@@ -40,18 +40,11 @@ resource = ExtResource("2_sqlun")
 quantity = 3
 metadata/_custom_type_script = "uid://dmorj7pdqbxb8"
 
-[sub_resource type="Resource" id="Resource_7avhh"]
-script = ExtResource("2_t8c35")
-nickname = "Diva"
-species = ExtResource("4_438cl")
-level = 4
-metadata/_custom_type_script = "uid://vggpohkhd40y"
-
 [sub_resource type="Resource" id="Resource_438cl"]
 script = ExtResource("2_t8c35")
 nickname = "CharChar"
 species = ExtResource("5_8dnqy")
-level = 3
+level = 4
 metadata/_custom_type_script = "uid://vggpohkhd40y"
 
 [sub_resource type="Resource" id="Resource_8dnqy"]
@@ -61,10 +54,17 @@ species = ExtResource("7_i3l1s")
 level = 2
 metadata/_custom_type_script = "uid://vggpohkhd40y"
 
+[sub_resource type="Resource" id="Resource_s1mqk"]
+script = ExtResource("2_t8c35")
+nickname = "Diva"
+species = ExtResource("4_438cl")
+level = 4
+metadata/_custom_type_script = "uid://vggpohkhd40y"
+
 [sub_resource type="Resource" id="Resource_stkwj"]
 script = ExtResource("3_xehwm")
 trainer_name = "PlayerName"
-monsters = Array[ExtResource("2_t8c35")]([SubResource("Resource_7avhh"), SubResource("Resource_438cl"), SubResource("Resource_8dnqy")])
+monsters = Array[ExtResource("2_t8c35")]([SubResource("Resource_438cl"), SubResource("Resource_8dnqy"), SubResource("Resource_s1mqk")])
 items = Array[ExtResource("1_lcie8")]([SubResource("Resource_i3l1s")])
 metadata/_custom_type_script = "uid://btf355hcs3vyn"
 

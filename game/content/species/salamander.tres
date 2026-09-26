@@ -2,22 +2,39 @@
 
 [ext_resource type="Texture2D" uid="uid://cvro04fgav35p" path="res://assets/art/monsters/salamander.png" id="1_6ogee"]
 [ext_resource type="Script" uid="uid://djamiiplbweq2" path="res://scripts/content/species_resource.gd" id="2_rafwy"]
+[ext_resource type="Script" uid="uid://h3fkq0vyhx65" path="res://scripts/content/int_move_resource.gd" id="2_vhu5o"]
+[ext_resource type="Resource" uid="uid://cctmlgij4rqdn" path="res://content/moves/regenerate.tres" id="3_qq36c"]
 [ext_resource type="Script" uid="uid://b8pt4buw614s3" path="res://scripts/content/move_resource.gd" id="3_tlkrm"]
+[ext_resource type="Resource" uid="uid://xdeavx7x3eb2" path="res://content/moves/smack.tres" id="4_qq36c"]
 [ext_resource type="Resource" uid="uid://dyp0xona83d12" path="res://content/moves/knife_dance.tres" id="4_tjeay"]
 [ext_resource type="Resource" uid="uid://c6r72sxdkrgsn" path="res://content/moves/poison_sting.tres" id="5_gu56f"]
-[ext_resource type="Resource" uid="uid://clixk805epr6u" path="res://content/moves/fast_attack.tres" id="6_tjeay"]
-[ext_resource type="Resource" uid="uid://xdeavx7x3eb2" path="res://content/moves/smack.tres" id="7_gu56f"]
+[ext_resource type="Resource" uid="uid://clixk805epr6u" path="res://content/moves/fast_attack.tres" id="9_dcgqe"]
+[ext_resource type="Resource" uid="uid://qybsaifjg" path="res://content/moves/paralyzing_sting.tres" id="10_g5ndh"]
+
+[sub_resource type="Resource" id="Resource_choun"]
+script = ExtResource("2_vhu5o")
+level = 5
+move = ExtResource("3_qq36c")
+metadata/_custom_type_script = "uid://h3fkq0vyhx65"
+
+[sub_resource type="Resource" id="Resource_ya4ey"]
+script = ExtResource("2_vhu5o")
+level = 6
+move = ExtResource("4_qq36c")
+metadata/_custom_type_script = "uid://h3fkq0vyhx65"
 
 [resource]
 script = ExtResource("2_rafwy")
 image = ExtResource("1_6ogee")
 species_name = "Salamander"
-starting_moves = Array[ExtResource("3_tlkrm")]([ExtResource("4_tjeay"), ExtResource("5_gu56f"), ExtResource("6_tjeay"), ExtResource("7_gu56f")])
+starting_moves = Array[ExtResource("3_tlkrm")]([ExtResource("4_tjeay"), ExtResource("5_gu56f"), ExtResource("9_dcgqe"), ExtResource("10_g5ndh")])
 type = 2
+base_max_level = null
 base_max_hp = 20
 base_attack = 7
 base_defense = 3
 base_special_attack = 3
 base_special_defense = 5
 base_speed = 70
+moves_learned_by_level = Array[ExtResource("2_vhu5o")]([SubResource("Resource_choun"), SubResource("Resource_ya4ey")])
 metadata/_custom_type_script = "uid://djamiiplbweq2"

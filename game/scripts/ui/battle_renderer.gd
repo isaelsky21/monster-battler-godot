@@ -6,6 +6,7 @@ extends Control
 @export var enemy_mon_state_dump: MonsterDataDump
 @export var controls: Control
 @export var message_panel: MessagePanel
+@export var move_replace_panel: OptionPanel
 
 func _ready() -> void:
 	# Connect signal listeners
@@ -31,16 +32,32 @@ func render() -> void:
 	
 	Events.on_message_panel_start.connect(show_message_panel)
 	Events.on_message_panel_end.connect(hide_message_panel)
+	Events.on_player_pending_learn_move.connect(show_learn_move_panel)
+	Events.on_player_move_replace_completed.connect(hide_learn_move_panel)
 	hide_message_panel()
 
 
 func show_message_panel() -> void:
 	message_panel.show()
 	controls.hide()
+	move_replace_panel.hide()
 
 
 func hide_message_panel() -> void:
 	message_panel.hide()
+	controls.show()
+	move_replace_panel.hide()
+
+
+func show_learn_move_panel(labels: Array[StringEnabled]) -> void:
+	move_replace_panel.show()
+	message_panel.hide()
+	controls.hide()
+	move_replace_panel.populate(labels)
+
+
+func hide_learn_move_panel() -> void:
+	move_replace_panel.hide()
 	controls.show()
 
 

@@ -4,7 +4,7 @@ extends Node
 
 # INTERACTION_MODE encodes the menu states the main battle menu can be in.
 # Since RUN isn't a special menu, it does not get an entry here
-enum INTERACTION_MODE {NONE, FIGHT, ITEM, MON}
+enum INTERACTION_MODE {NONE, FIGHT, ITEM, MON, MOVE_REPLACE}
 
 # Turn state machine
 enum PHASE {AWAIT_INPUT, RESOLVE_ROUND, AWAIT_AVFX, GAME_OVER}
@@ -29,6 +29,7 @@ func _ready() -> void:
 	Events.request_quit.connect(handle_run)
 	Events.on_avfx_block_start.connect(func() -> void: current_phase = PHASE.AWAIT_AVFX)
 	Events.on_avfx_block_end.connect(func() -> void: current_phase = PHASE.AWAIT_INPUT)
+	Events.on_avfx_function.connect(handle_avfx_function)
 	
 	Events.on_ui_ready.connect(set_up_model)
 
@@ -124,6 +125,8 @@ func handle_menu_option_selected(mode: INTERACTION_MODE, index: int) -> void:
 			trainer_controller.set_current_monster_move(game_state.player, index)
 		INTERACTION_MODE.ITEM:
 			trainer_controller.set_use_item_at_index(game_state.player, index)
+		INTERACTION_MODE.MOVE_REPLACE:
+			monster_controller.set_monster_move_at_index_to_pending_move(game_state.player_monster, index)
 
 
 func handle_restart() -> void:
@@ -133,8 +136,14 @@ func handle_restart() -> void:
 func handle_run() -> void:
 	if current_phase != PHASE.AWAIT_INPUT:
 		return
-	AVFXManager.queue_avfx_message("You ran away!", game_state)
-	await get_tree().create_timer(2.0).timeout
+	
+	var choice_run: ChoiceResource = ChoiceResource.new("> Leave", handle_quit)
+	var choice_cancel: ChoiceResource = ChoiceResource.new("> Cancel", func() -> void: return)
+	AVFXManager.queue_avfx_message("Are you sure?", [choice_run, choice_cancel], game_state)
+	#await get_tree().create_timer(2.0).timeout
+
+
+func handle_quit() -> void:
 	get_tree().quit()
 
 
@@ -142,7 +151,7 @@ func choose_opponent_move() -> void:
 	# If no moves, show log and end turn
 	var legal_move_indices: Array[int] = game_state.opponent_monster.get_legal_move_indices()
 	if legal_move_indices.size() <= 0:
-		AVFXManager.queue_avfx_message("Out of moves. Using default.", game_state)
+		AVFXManager.queue_avfx_message("Out of moves. Using default.", [], game_state)
 		trainer_controller.set_current_monster_move(game_state.opponent, -1)
 	else:
 		# Save move index from opponent moves list
@@ -162,12 +171,16 @@ func resolve_round() -> void:
 		trainer_controller.do_trainer_turn(game_state.opponent)
 		trainer_controller.do_trainer_turn(game_state.player)
 	
+	var quit_choice: ChoiceResource = ChoiceResource.new("> Quit", handle_quit)
+	var restart_choice: ChoiceResource = ChoiceResource.new("> Restart", handle_restart)
+	
 	if game_state.player_monster.hp == 0:
 		monster_controller.add_experience_to_monster(game_state.opponent_monster, Calculations.monster_experience_yield(game_state.player_monster))
 		var next_index: int = trainer_controller.get_next_usable_monster_index(game_state.player)
 		if next_index == -1:
 			current_phase = PHASE.GAME_OVER
 			Events.on_game_over.emit(false)
+			AVFXManager.queue_avfx_message("You lose!", [quit_choice, restart_choice], game_state)
 		else:
 			trainer_controller.set_add_trainer_monster_to_battle(game_state.player, next_index)
 	if game_state.opponent_monster.hp == 0:
@@ -176,8 +189,14 @@ func resolve_round() -> void:
 		if next_index == -1:
 			current_phase = PHASE.GAME_OVER
 			Events.on_game_over.emit(true)
+			AVFXManager.queue_avfx_message("You win!", [quit_choice, restart_choice], game_state)
 		else:
 			trainer_controller.set_add_trainer_monster_to_battle(game_state.opponent, next_index)
+	
+	var update_player_mon: AVFXFunction = AVFXFunction.new(func() -> void: Events.on_monster_updated.emit(game_state.player_monster))
+	var update_opponent_mon: AVFXFunction = AVFXFunction.new(func() -> void: Events.on_monster_updated.emit(game_state.opponent_monster))
+	
+	AVFXManager.queue_avfx_effect_group([update_player_mon, update_opponent_mon], null, game_state)
 
 
 # Handles move priority
@@ -201,3 +220,16 @@ func does_player_go_first() -> bool:
 		return false
 	else:
 		return game_state.player_monster.speed >= game_state.opponent_monster.speed
+
+
+func handle_avfx_function(instance: AVFXInstance, function: Callable) -> void:
+	if instance.delay == 0:
+		call_avfx_function(instance, function)
+	else:
+		await get_tree().create_timer(instance.delay)\
+			.timeout.connect(func() -> void: call_avfx_function(instance, function))
+
+
+func call_avfx_function(instance: AVFXInstance, function: Callable) -> void:
+	function.call()
+	instance.finish()

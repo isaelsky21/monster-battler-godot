@@ -8,10 +8,22 @@ var hp: int
 var experience: int
 # Current level
 var level: int = 1
+
+## MOVES
+# Max amount of moves at a time
+var max_moves: int = 4
 # List of moves the monster knows
-var moves: Array[Move] = []
+var moves: Array[Move]
+# Pending moves to learn
+var pending_moves: Array[MoveResource]
+# Move to to learn if replacing when learning a new move
+var pending_move: MoveResource
 # Move used when out of moves
 var fallback_move: Move
+# Ephemeral state, cleared after each turn
+# Move successfully blocked by condition
+var move_blocked: bool
+
 # List of conditions applied to monster
 var conditions: Array[Condition]
 
@@ -23,9 +35,6 @@ var special_attack_growth: float
 var special_defense_growth: float
 var speed_growth: float
 
-# Ephemeral state, cleared after each turn
-# Move successfully blocked by condition
-var move_blocked: bool
 
 # Getters
 var image: Texture2D:

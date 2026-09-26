@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://tovydk4i6a4q" path="res://assets/art/monsters/dino.png" id="1_htcjd"]
 [ext_resource type="Script" uid="uid://djamiiplbweq2" path="res://scripts/content/species_resource.gd" id="1_pqx4l"]
+[ext_resource type="Script" uid="uid://h3fkq0vyhx65" path="res://scripts/content/int_move_resource.gd" id="2_eqesu"]
 [ext_resource type="Script" uid="uid://b8pt4buw614s3" path="res://scripts/content/move_resource.gd" id="3_gfe2g"]
 [ext_resource type="Resource" uid="uid://xdeavx7x3eb2" path="res://content/moves/smack.tres" id="4_br6pm"]
 

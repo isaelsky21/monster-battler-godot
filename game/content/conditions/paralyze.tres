@@ -1,5 +1,6 @@
 [gd_resource type="Resource" script_class="ConditionResource" format=3 uid="uid://cmlhsoi6jxibt"]
 
+[ext_resource type="Script" uid="uid://cv01tthnwd0x0" path="res://scripts/avfx/avfx_resources/avfx_resource.gd" id="1_fyrwd"]
 [ext_resource type="Script" uid="uid://bmpu62rqyon1e" path="res://scripts/content/targeted_effects/targeted_effect.gd" id="1_hufe4"]
 [ext_resource type="Script" uid="uid://bw5ule2ss55e4" path="res://scripts/content/condition_resource.gd" id="2_8qkgd"]
 [ext_resource type="Script" uid="uid://cfhv5x13i64h" path="res://scripts/content/targeted_effects/block_move.gd" id="2_fyrwd"]

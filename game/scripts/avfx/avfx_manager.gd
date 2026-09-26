@@ -36,8 +36,11 @@ func _process(_delta: float) -> void:
 			call_deferred("emit_block_start")
 
 
-func queue_avfx_message(message: String, game_state: GameState) -> void:
-	var messages: AVFXMessages = AVFXMessages.new([message] as Array[String])
+# NOTE: If choices does not have an initial value, it will need to be set
+# when calling the function
+func queue_avfx_message(message: String, choices: Array[ChoiceResource], game_state: GameState) -> void:
+	var message_resource: MessageResource = MessageResource.new(message, choices)
+	var messages: AVFXMessages = AVFXMessages.new([message_resource] as Array[MessageResource])
 	queue_avfx_effect_group([messages], null, game_state)
 
 

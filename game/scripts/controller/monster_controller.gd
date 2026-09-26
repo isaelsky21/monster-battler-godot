@@ -97,16 +97,20 @@ func use_monster_move(monster: Monster, move: Move) -> void:
 		if crit:
 			logs.append("Critial hit!")
 		
-		var message_avfx: AVFXMessages = AVFXMessages.new(logs as Array[String])
-		var avfx_group: Array[AVFXResource] = move.resource.use_avfx.duplicate()
-		avfx_group.append(message_avfx)
-		AVFXManager.queue_avfx_effect_group(avfx_group, monster, game_state)
-		
 		# If effect hits, proceed to use effect(s)
 		for effect: TargetedEffect in move.resource.use_effects:
 			if effect.should_do(hit, crit):
 				effect._do(monster, move, crit, logs, game_state, rng)
-
+		
+		var message_avfx: AVFXMessages = AVFXMessages.from_strings(logs as Array[String])
+		var avfx_group: Array[AVFXResource] = move.resource.use_avfx.duplicate()
+		avfx_group.append(message_avfx)
+		AVFXManager.queue_avfx_effect_group(avfx_group, monster, game_state)
+		
+		var cleanup_avfx_group: Array = []
+		var update_effect: AVFXFunction = AVFXFunction.new(func() -> void: Events.on_monster_updated.emit(monster))
+		var target_effect: AVFXFunction = AVFXFunction.new(func() -> void: Events.on_monster_updated.emit(opponent))
+		AVFXManager.queue_avfx_effect_group([update_effect, target_effect], monster, game_state)
 
 # Function to add/subtract hp to/from monster
 func adjust_monster_hp(monster: Monster, amount: int) -> void:
@@ -115,9 +119,6 @@ func adjust_monster_hp(monster: Monster, amount: int) -> void:
 	
 	if monster.hp == 0:
 		faint_monster(monster)
-	
-	# Update UI
-	Events.on_monster_updated.emit(monster)
 
 
 func faint_monster(monster: Monster) -> void:
@@ -136,16 +137,10 @@ func instantiate_condition_on_monster(monster: Monster, condition_resource: Cond
 	condition.resource = condition_resource
 	condition.duration_remaining = condition.resource.duration
 	monster.conditions.append(condition)
-	
-	# Update UI
-	Events.on_monster_updated.emit(monster)
 
 
 func end_condition(monster: Monster, condition: Condition) -> void:
 	monster.conditions.remove_at(monster.conditions.find(condition))
-	
-	# Update UI
-	Events.on_monster_updated.emit(monster)
 
 
 func on_turn_begun(monster: Monster) -> void:
@@ -170,13 +165,79 @@ func add_experience_to_monster(monster: Monster, experience: int) -> void:
 		if monster.experience >= required_experience:
 			monster.experience -= required_experience
 			level_up_monster(monster)
-			Events.on_monster_updated.emit(monster)
 		else:
 			break
+	
+	maybe_give_move_replace_choice(monster)
 
 
 func level_up_monster(monster: Monster) -> void:
 	monster.level += 1
 	AVFXManager.queue_avfx_message("{monster_name} leveled up to level {level}"\
-	.format({"monster_name": monster.nickname, "level": monster.level}), game_state)
-	#TODO: Handle move learning down here!
+	.format({"monster_name": monster.nickname, "level": monster.level}), [], game_state)
+	
+	# Search moves learned at current monster level and add to list
+	var moves_to_learn: Array[IntMoveResource] = monster.species.moves_learned_by_level.filter(func(int_move: IntMoveResource) -> bool: return int_move.level == monster.level)
+	for move_to_learn: IntMoveResource in moves_to_learn:
+		monster.pending_moves.append(move_to_learn.move)
+	
+	# Save amount of empty move spaces left
+	var available_slots: int = monster.max_moves - monster.moves.size()
+	var moves_to_transfer: int = min(available_slots, monster.pending_moves.size())
+	
+	# Iterate through list and create and add the moves to monster move list
+	for _i in range(moves_to_transfer):
+		var move_to_add: MoveResource = monster.pending_moves.pop_front()
+		var move: Move = Move.new()
+		move.resource = move_to_add
+		move.usages = move.resource.max_usages
+		monster.moves.append(move)
+		
+		AVFXManager.queue_avfx_message("{monster_name} learned {move_name}"\
+		.format({"monster_name": monster.nickname, "move_name": move_to_add.move_name}), [], game_state)
+
+
+# Ask player if they want to replace move with newly learned one
+func maybe_give_move_replace_choice(monster: Monster) -> void:
+	if monster.pending_moves.size() == 0:
+		return
+	
+	monster.pending_move = monster.pending_moves.pop_front()
+	
+	if monster == game_state.player_monster:
+		var labels: Array[StringEnabled] = []
+		for move: Move in monster.moves:
+			labels.append(StringEnabled.new(move.move_name, true))
+		
+		var want_to_learn_string: String = "{monster_name} wants to learn {move_name}.\
+			Replace a move?".format({"monster_name": monster.nickname,\
+				"move_name": monster.pending_move.move_name})
+		var did_not_learn_string: String = "{monster_name} did not learn {move_name}."\
+			.format({"monster_name": monster.nickname, "move_name": monster.pending_move.move_name})
+		var choice_yes: ChoiceResource = ChoiceResource.new("> Yes", func() -> void: Events.on_player_pending_learn_move.emit(labels))
+		var choice_no: ChoiceResource = ChoiceResource.new\
+		("> No", func() -> void: AVFXManager.queue_avfx_message\
+		(did_not_learn_string, [], game_state))
+		
+		AVFXManager.queue_avfx_message(want_to_learn_string, [choice_yes, choice_no], game_state)
+	else:
+		# Handle opponent move learning
+		return
+
+
+func set_monster_move_at_index_to_pending_move(monster: Monster, index: int) -> void:
+	var previous_move: Move = monster.moves[index]
+	var move: Move = Move.new()
+	move.resource = monster.pending_move
+	move.usages = move.resource.max_usages
+	monster.moves[index] = move
+	monster.pending_move = null
+	
+	Events.on_player_move_replace_completed.emit()
+	
+	AVFXManager.queue_avfx_message("{monster_name} forgot {old_move_name}\
+		and learned {new_move_name}".format({"monster_name": monster.nickname,\
+		"old_move_name": previous_move.move_name,\
+		"new_move_name": move.move_name}), [], game_state)
+	
+	maybe_give_move_replace_choice(monster)

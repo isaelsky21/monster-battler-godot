@@ -19,4 +19,4 @@ static func experience_for_level(level: int) -> int:
 
 # Amount of experience you get for defeating a monster
 static func monster_experience_yield(monster: Monster) -> int:
-	return 100 * monster.level
+	return 600 * monster.level

@@ -4,12 +4,38 @@
 [ext_resource type="Script" uid="uid://bmpu62rqyon1e" path="res://scripts/content/targeted_effects/targeted_effect.gd" id="2_r2f12"]
 [ext_resource type="Script" uid="uid://cv01tthnwd0x0" path="res://scripts/avfx/avfx_resources/avfx_resource.gd" id="2_uyy85"]
 [ext_resource type="Script" uid="uid://bkdjxoradugbj" path="res://scripts/content/targeted_effects/do_damage.gd" id="3_0ifth"]
+[ext_resource type="Script" uid="uid://bxl72h7cvlfm2" path="res://scripts/content/vector2_float.gd" id="3_61tbo"]
+[ext_resource type="Script" uid="uid://bv3d2c7c8576n" path="res://scripts/avfx/avfx_resources/avfx_move_monster.gd" id="4_25h3u"]
 [ext_resource type="Resource" uid="uid://c7hdrgntiidf5" path="res://content/conditions/poison.tres" id="4_uyy85"]
+[ext_resource type="Script" uid="uid://bsn8tkyrwo24d" path="res://scripts/avfx/avfx_resources/avfx_flash_monster.gd" id="5_mp1e5"]
 [ext_resource type="Script" uid="uid://bnmjm4hngkidv" path="res://scripts/content/targeted_effects/add_condition.gd" id="5_ys806"]
+
+[sub_resource type="Resource" id="Resource_ya4ey"]
+script = ExtResource("3_61tbo")
+v2 = Vector2(-20, 0)
+f = 0.1
+metadata/_custom_type_script = "uid://bxl72h7cvlfm2"
+
+[sub_resource type="Resource" id="Resource_eb6dy"]
+script = ExtResource("3_61tbo")
+v2 = Vector2(5, 0)
+f = 0.05
+metadata/_custom_type_script = "uid://bxl72h7cvlfm2"
+
+[sub_resource type="Resource" id="Resource_choun"]
+script = ExtResource("4_25h3u")
+offsets_by_duration = Array[ExtResource("3_61tbo")]([SubResource("Resource_ya4ey"), SubResource("Resource_eb6dy")])
+metadata/_custom_type_script = "uid://bv3d2c7c8576n"
+
+[sub_resource type="Resource" id="Resource_trceg"]
+script = ExtResource("5_mp1e5")
+flash_values = Array[Vector2]([Vector2(0, 0.1), Vector2(0.5, 0.1), Vector2(0, 0.1)])
+delay = 0.15
+metadata/_custom_type_script = "uid://bsn8tkyrwo24d"
 
 [sub_resource type="Resource" id="Resource_0ifth"]
 script = ExtResource("3_0ifth")
-base_damage = 4
+base_damage = 40
 metadata/_custom_type_script = "uid://bkdjxoradugbj"
 
 [sub_resource type="Resource" id="Resource_uyy85"]
@@ -22,4 +48,5 @@ script = ExtResource("1_10tpj")
 move_name = "Poison Sting"
 max_usages = 15
 use_effects = Array[ExtResource("2_r2f12")]([SubResource("Resource_0ifth"), SubResource("Resource_uyy85")])
+use_avfx = Array[ExtResource("2_uyy85")]([SubResource("Resource_choun"), SubResource("Resource_trceg")])
 metadata/_custom_type_script = "uid://b8pt4buw614s3"

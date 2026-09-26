@@ -13,3 +13,5 @@ extends Resource
 @export var base_special_attack: int
 @export var base_special_defense: int
 @export var base_speed: int
+
+@export var moves_learned_by_level: Array[IntMoveResource]

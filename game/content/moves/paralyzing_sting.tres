@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b8pt4buw614s3" path="res://scripts/content/move_resource.gd" id="1_8ruhu"]
 [ext_resource type="Script" uid="uid://bmpu62rqyon1e" path="res://scripts/content/targeted_effects/targeted_effect.gd" id="2_jvx65"]
+[ext_resource type="Script" uid="uid://cv01tthnwd0x0" path="res://scripts/avfx/avfx_resources/avfx_resource.gd" id="2_n3byq"]
 [ext_resource type="Resource" uid="uid://cmlhsoi6jxibt" path="res://content/conditions/paralyze.tres" id="3_d8u3u"]
 [ext_resource type="Script" uid="uid://bnmjm4hngkidv" path="res://scripts/content/targeted_effects/add_condition.gd" id="4_n3byq"]
 
