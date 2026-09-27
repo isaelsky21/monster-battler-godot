@@ -18,34 +18,48 @@ extends Control
 @export var hp_bar: ProgressBar
 @export var status_label: Label
 
-# Monster that needs updating
-var _bound_monster: Monster
+# Variable holding Monster data
+var bound_monster: Monster
 
 
-func connect_events() -> void:
+func _ready() -> void:
+	Events.on_monster_added_to_battle.connect(assign_monster)
 	Events.on_monster_updated.connect(update_monster_data)
-	Events.on_monster_added_to_battle.connect(maybe_bind_monster)
+	
 	Events.on_avfx_move.connect(move_monster)
 	Events.on_avfx_flash_monster.connect(flash_monster)
 
 
-func update_monster_data(monster: Monster) -> void:
-	if monster == _bound_monster:
-		update()
-
-
-func maybe_bind_monster(monster: Monster, is_player_monster: bool) -> void:
+func assign_monster(monster: Monster, is_player_monster: bool) -> void:
 	if your_pov == is_player_monster:
-		_bound_monster = monster
+		bound_monster = monster
 		# Move child node to top if player, so it shows left of UI
 		move_child(frame, 0 if is_player_monster else 1)
-		update()
+		update_monster_data(bound_monster)
+
+
+func update_monster_data(monster: Monster) -> void:
+	if bound_monster == null:
+		return
+	
+	if monster == bound_monster:
+		name_label.text = bound_monster.species_name.to_upper()
+		sprite.texture = bound_monster.image
+		hp_bar.max_value = bound_monster.max_hp
+		animate_hp_bar(bound_monster.hp)
+		hp_label.text = "{hp}\\{max_hp}".format({"hp": bound_monster.hp, "max_hp": bound_monster.max_hp})
+		status_label.text = bound_monster.get_condition_string()
+
+
+func animate_hp_bar(new_hp: int) -> void:
+	var tween: Tween = get_tree().create_tween()
+	tween.tween_property(hp_bar, "value", new_hp, 0.25)
 
 
 # Animate monster when attacking
 func move_monster(avfx_instance: AVFXInstance, v2fs: Array[Vector2Float]) -> void:
 	var avfx_target: Monster = avfx_instance.user if avfx_instance.resource.target_self else avfx_instance.target
-	if avfx_target != _bound_monster:
+	if avfx_target != bound_monster:
 		avfx_instance.finish()
 		return
 	
@@ -64,7 +78,7 @@ func move_monster(avfx_instance: AVFXInstance, v2fs: Array[Vector2Float]) -> voi
 
 func flash_monster(avfx_instance: AVFXInstance, v2s: Array[Vector2]) -> void:
 	var avfx_target: Monster = avfx_instance.user if avfx_instance.target_self else avfx_instance.target
-	if avfx_target != _bound_monster:
+	if avfx_target != bound_monster:
 		avfx_instance.finish()
 		return
 	
@@ -79,20 +93,3 @@ func flash_monster(avfx_instance: AVFXInstance, v2s: Array[Vector2]) -> void:
 	
 	tween.tween_property(sprite, "modulate", Color.WHITE, 0.0)
 	tween.tween_callback(avfx_instance.finish)
-
-
-func update() -> void:
-	if _bound_monster == null:
-		return
-	
-	name_label.text = _bound_monster.species_name.to_upper()
-	sprite.texture = _bound_monster.image
-	hp_bar.max_value = _bound_monster.max_hp
-	animate_hp_bar(_bound_monster.hp)
-	hp_label.text = "{hp}\\{max_hp}".format({"hp": _bound_monster.hp, "max_hp": _bound_monster.max_hp})
-	status_label.text = _bound_monster.get_condition_string()
-
-
-func animate_hp_bar(new_hp: int) -> void:
-	var tween: Tween = get_tree().create_tween()
-	tween.tween_property(hp_bar, "value", new_hp, 0.25)

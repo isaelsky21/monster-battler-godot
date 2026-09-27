@@ -37,11 +37,9 @@ offset_bottom = 164.0
 
 [node name="opponent_monster_renderer_module" parent="battle_renderer/left" unique_id=1040930189 instance=ExtResource("4_jkv2x")]
 layout_mode = 2
-theme = null
 
 [node name="player_monster_renderer_module" parent="battle_renderer/left" unique_id=1629017970 instance=ExtResource("4_jkv2x")]
 layout_mode = 2
-theme = null
 
 [node name="controls_menu" parent="battle_renderer/left" unique_id=958742562 instance=ExtResource("5_choun")]
 layout_mode = 2

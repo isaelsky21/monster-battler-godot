@@ -16,11 +16,6 @@ extends Control
 func _ready() -> void:
 	player_monster_module.your_pov = true
 	
-	player_monster_module.connect_events()
-	opponent_monster_module.connect_events()
-	player_monster_state_dump.connect_events()
-	opponent_monster_state_dump.connect_events()
-	
 	Events.on_avfx_projectile.connect(avfx_projectile)
 	Events.on_avfx_animation.connect(avfx_animation)
 	Events.on_avfx_flash_screen.connect(avfx_flash_screen)
@@ -34,6 +29,15 @@ func _ready() -> void:
 	
 	# Once listeners are connected, we need to emit an event to unblock gameplay
 	Events.on_ui_ready.emit()
+
+
+### For getting monster frame holding sprite
+func get_monster_frame(monster: Monster) -> Control:
+	if player_monster_module.bound_monster == monster:
+		return player_monster_module.frame
+	elif opponent_monster_module.bound_monster == monster:
+		return opponent_monster_module.frame
+	return null
 
 
 func show_message_panel() -> void:
@@ -141,14 +145,6 @@ func do_avfx_animation(instance: AVFXInstance, animation_scene: PackedScene) -> 
 	animation_node.offset = instance.animation_offset
 	animation_node.play()
 	animation_node.animation_finished.connect(func() -> void: clean_up_avfx_node(instance, animation_node))
-
-
-func get_monster_frame(monster: Monster) -> Control:
-	if player_monster_module.bound_monster == monster:
-		return player_monster_module.frame
-	elif opponent_monster_module.bound_monster == monster:
-		return opponent_monster_module.frame
-	return null
 
 
 func clean_up_avfx_node(instance: AVFXInstance, node: Node) -> void:

@@ -5,13 +5,15 @@ extends Control
 @export var your_monster: bool
 var bound_monster: Monster
 
-# The purpose of the class it to output a string representation of all relevant monster state,
-# so we can see stats, conditions, etc. without having to go into code or write specialized
-# UI handlers. Don't ship a game with something ugly like this.
+# The purpose of the class it to output a string representation of all relevant
+# monster state, so we can see stats, conditions, etc. without having to go into
+# code or write specialized UI handlers. Don't ship a game with something ugly
+# like this.
 
-func connect_events() -> void:
+
+func _ready() -> void:
 	Events.on_monster_updated.connect(update_monster_data)
-	Events.on_monster_added_to_battle.connect(maybe_bind_monster)
+	Events.on_monster_added_to_battle.connect(assign_monster)
 
 
 func update_monster_data(monster: Monster) -> void:
@@ -19,7 +21,7 @@ func update_monster_data(monster: Monster) -> void:
 		update()
 
 
-func maybe_bind_monster(monster: Monster, is_player_monster: bool) -> void:
+func assign_monster(monster: Monster, is_player_monster: bool) -> void:
 	if your_monster == is_player_monster:
 		bound_monster = monster
 		update()
