@@ -1,12 +1,10 @@
 [gd_scene format=3 uid="uid://dcj3mcthwqxte"]
 
 [ext_resource type="Script" uid="uid://ball7vlteiawp" path="res://scripts/ui/monster_renderer_module.gd" id="1_3kg54"]
-[ext_resource type="Theme" uid="uid://bwqrj7njjbn07" path="res://ui/main.tres" id="2_4w4es"]
 [ext_resource type="Texture2D" uid="uid://q5ukv4r8xxs1" path="res://assets/art/monsters/turtle.png" id="3_3kg54"]
 
 [node name="monster_renderer_module" type="HBoxContainer" unique_id=1696271180 node_paths=PackedStringArray("frame", "sprite", "data_panel", "name_label", "hp_label", "hp_bar", "status_label")]
 custom_minimum_size = Vector2(0, 58)
-theme = ExtResource("2_4w4es")
 script = ExtResource("1_3kg54")
 frame = NodePath("frame")
 sprite = NodePath("frame/sprite")
@@ -28,7 +26,6 @@ text = "MONSTERNAME"
 texture_filter = 1
 custom_minimum_size = Vector2(40, 4)
 layout_mode = 2
-theme = ExtResource("2_4w4es")
 show_percentage = false
 
 [node name="sub-hp" type="HBoxContainer" parent="monster_data" unique_id=159688950]

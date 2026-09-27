@@ -42,6 +42,10 @@ window/size/viewport_height=940
 
 project/assembly_name="Let-s Build a Monster Battler"
 
+[gui]
+
+theme/custom="uid://c12obaa3mm8ev"
+
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0

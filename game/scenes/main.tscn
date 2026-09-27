@@ -1,6 +1,5 @@
 [gd_scene format=3 uid="uid://dsstlaea5k8aw"]
 
-[ext_resource type="Theme" uid="uid://bwqrj7njjbn07" path="res://ui/main.tres" id="2_trceg"]
 [ext_resource type="Script" uid="uid://b7eoh6vvt5ick" path="res://scripts/ui/battle_renderer.gd" id="3_a8y0u"]
 [ext_resource type="PackedScene" uid="uid://dcj3mcthwqxte" path="res://scenes/mon_renderer_module.tscn" id="4_jkv2x"]
 [ext_resource type="PackedScene" uid="uid://crpahbrk5mgcm" path="res://scenes/controls_menu.tscn" id="5_choun"]
@@ -22,7 +21,6 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 410.0
 offset_bottom = 178.0
-theme = ExtResource("2_trceg")
 script = ExtResource("3_a8y0u")
 player_monster_module = NodePath("left/player_monster_renderer_module")
 opponent_monster_module = NodePath("left/opponent_monster_renderer_module")
@@ -39,9 +37,11 @@ offset_bottom = 164.0
 
 [node name="opponent_monster_renderer_module" parent="battle_renderer/left" unique_id=1040930189 instance=ExtResource("4_jkv2x")]
 layout_mode = 2
+theme = null
 
 [node name="player_monster_renderer_module" parent="battle_renderer/left" unique_id=1629017970 instance=ExtResource("4_jkv2x")]
 layout_mode = 2
+theme = null
 
 [node name="controls_menu" parent="battle_renderer/left" unique_id=958742562 instance=ExtResource("5_choun")]
 layout_mode = 2
@@ -88,7 +88,6 @@ offset_left = 194.0
 offset_top = 5.0
 offset_right = 447.0
 offset_bottom = 302.0
-theme = ExtResource("2_trceg")
 theme_override_fonts/font = ExtResource("9_gqmmt")
 current_tab = 0
 
