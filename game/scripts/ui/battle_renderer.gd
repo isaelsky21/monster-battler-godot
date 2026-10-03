@@ -1,6 +1,6 @@
 extends Control
 
-# Holds UI information about the monster such as HP, image, name
+# UI that displays information about the monster such as HP, image, and name
 @export var player_monster_module: MonsterRendererModule
 @export var opponent_monster_module: MonsterRendererModule
 
@@ -70,7 +70,7 @@ func avfx_flash_screen(avfx_instance: AVFXInstance, v2s: Array[Vector2]) -> void
 	tween.tween_property(self, "modulate", Color.WHITE, 0.0)\
 		.set_delay(avfx_instance.delay)
 	
-	for v2 in v2s:
+	for v2: Vector2 in v2s:
 		var color: Color = Color(Color.WHITE, v2.x)
 		tween.tween_property(self, "modulate", color, v2.y)
 	
@@ -84,7 +84,7 @@ func avfx_shake_screen(avfx_instance: AVFXInstance, v3s: Array[Vector3]) -> void
 	tween.tween_property(self, "position", Vector2.ZERO, 0.0)\
 		.set_delay(avfx_instance.delay)
 	
-	for v3 in v3s:
+	for v3: Vector3 in v3s:
 		var v2: Vector2 = Vector2(v3.x, v3.y)
 		tween.tween_property(self, "position", v2, v3.z)
 	

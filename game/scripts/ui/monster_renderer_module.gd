@@ -33,7 +33,8 @@ func _ready() -> void:
 func assign_monster(monster: Monster, is_player_monster: bool) -> void:
 	if your_pov == is_player_monster:
 		bound_monster = monster
-		# Move child node to top if player, so it shows left of UI
+		# Move child node to top in the scene tree if player,
+		# so it shows to the left of UI
 		move_child(frame, 0 if is_player_monster else 1)
 		update_monster_data(bound_monster)
 

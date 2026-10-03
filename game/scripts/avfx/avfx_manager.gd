@@ -36,15 +36,15 @@ func _process(_delta: float) -> void:
 			call_deferred("emit_block_start")
 
 
-# NOTE: If choices does not have an initial value, it will need to be set
-# when calling the function
+## NOTE: If choices does not have an initial value, it will need to be set
+## when calling the function
 func queue_avfx_message(message: String, choices: Array[ChoiceResource], game_state: GameState) -> void:
 	var message_resource: MessageResource = MessageResource.new(message, choices)
 	var messages: AVFXMessages = AVFXMessages.new([message_resource] as Array[MessageResource])
 	queue_avfx_effect_group([messages], null, game_state)
 
 
-# Add effect to the list
+## Add effect to the list
 func queue_avfx_effect_group(resources: Array[AVFXResource], monster: Monster, game_state: GameState) -> void:
 	active = true
 	var group: Node = Node.new()
@@ -66,12 +66,12 @@ func queue_avfx_effect_group(resources: Array[AVFXResource], monster: Monster, g
 		group.queue_free()
 
 
-# Delayed function to block input while animation plays
+## Delayed function to block input while animation plays
 func emit_block_start() -> void:
 	Events.on_avfx_block_start.emit()
 
 
-# Destroy effect after use
+## Destroy effect after use
 func remove_effect(avfx_instance: AVFXInstance) -> void:
 	avfx_instance.queue_free()
 	

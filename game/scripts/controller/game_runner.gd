@@ -1,8 +1,8 @@
 extends Node
 ## The main script that controls the flow of the game.
 
-# INTERACTION_MODE encodes the menu states the main battle menu can be in.
-# Since RUN isn't a special menu, it does not get an entry here
+## Encodes the menu states the main battle menu can be in.
+## Since RUN isn't a special menu, it does not get an entry here
 enum INTERACTION_MODE {NONE, FIGHT, ITEM, MON, MOVE_REPLACE}
 
 # Turn state machine

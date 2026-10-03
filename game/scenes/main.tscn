@@ -13,6 +13,7 @@
 [node name="main" type="Node2D" unique_id=1023898176]
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1573639947]
+visible = false
 offset = Vector2(196.46, 180)
 zoom = Vector2(2.57, 2.57)
 
