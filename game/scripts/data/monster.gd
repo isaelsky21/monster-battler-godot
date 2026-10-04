@@ -13,9 +13,9 @@ var level: int = 1
 # Max amount of moves at a time
 var max_moves: int = 4
 # List of moves the monster knows
-var moves: Array[Move]
+var moves: Array[Move] = []
 # Pending moves to learn
-var pending_moves: Array[MoveResource]
+var pending_moves: Array[MoveResource] = []
 # Move to to learn if replacing when learning a new move
 var pending_move: MoveResource
 # Move used when out of moves
@@ -25,7 +25,7 @@ var fallback_move: Move
 var move_blocked: bool
 
 # List of conditions applied to monster
-var conditions: Array[Condition]
+var conditions: Array[Condition] = []
 
 # Stat changes based on levels attained
 var hp_growth: float
@@ -76,13 +76,39 @@ var speed: int:
 
 # Go through moves list, add usable moves to variable, and return
 func get_legal_move_indices() -> Array[int]:
-	var legal_indices: Array[int]
+	var legal_indices: Array[int] = []
 	
 	for i in range(0, moves.size()):
 		if moves[i] and moves[i].usages > 0:
 			legal_indices.append(i)
 	
 	return legal_indices
+
+
+func adjust_hp(amount: int) -> void:
+	hp = clampi(hp + amount, 0, max_hp)
+
+
+func is_fainted() -> bool:
+	return hp <= 0
+
+
+func add_condition(condition_resource: ConditionResource) -> bool:
+	var current_stacks: int = conditions.filter(
+		func(condition_to_check: Condition) -> bool:
+			return condition_to_check.resource == condition_resource
+	).size()
+	
+	if current_stacks >= condition_resource.max_stacks:
+		return false
+	
+	var condition: Condition = Condition.new()
+	condition.resource = condition_resource
+	condition.duration_remaining = condition_resource.duration
+	
+	conditions.append(condition)
+	
+	return true
 
 
 func sum_condition_stats_for_code(code: Stat.Code) -> int:
@@ -117,8 +143,8 @@ func dump_state() -> String:
 	return "Name: {name}\nHP: {hp}/{max_hp}\nAttack: {attack}\nDefense: {defense}\nSpecial Attack: {special_attack}\nSpecial Defense: {special_defense} \nSpeed: {speed} \nConditions: {conditions}"\
 	.format({
 		"name": species_name,
-		"max_hp": hp,
-		"hp": max_hp,
+		"max_hp": max_hp,
+		"hp": hp,
 		"attack": attack,
 		"defense": defense,
 		"special_attack": special_attack,

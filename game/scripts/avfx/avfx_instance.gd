@@ -2,26 +2,24 @@ class_name AVFXInstance
 extends Node
 # Holds context like target
 
+var resource: AVFXResource
 var user: Monster
 var target: Monster
-var resource: AVFXResource
 
 var target_self: bool:
 	get: return resource.target_self
-var sprite_offset: Vector2:
-	get: return resource.sprite_offset
-var animation_offset: Vector2:
-	get: return resource.animation_offset
-var duration: float:
-	get: return resource.duration
 var delay: float:
 	get: return resource.delay
 
 
-func _init(res: AVFXResource, usr: Monster, targ: Monster) -> void:
-	resource = res
-	user = usr
-	target = targ
+func _init(
+	p_resource: AVFXResource,
+	p_user: Monster,
+	p_target: Monster
+) -> void:
+	resource = p_resource
+	user = p_user
+	target = p_target
 
 
 func execute() -> void:

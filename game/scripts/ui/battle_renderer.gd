@@ -92,15 +92,38 @@ func avfx_shake_screen(avfx_instance: AVFXInstance, v3s: Array[Vector3]) -> void
 	tween.tween_callback(avfx_instance.finish)
 
 
-func avfx_projectile(instance: AVFXInstance, texture: Texture2D) -> void:
+func avfx_projectile(
+	instance: AVFXInstance,
+	texture: Texture2D,
+	sprite_offset: Vector2,
+	duration: float
+) -> void:
 	if instance.delay == 0:
-		do_avfx_projectile(instance, texture)
+		do_avfx_projectile(
+			instance,
+			texture,
+			sprite_offset,
+			duration
+		)
 	else:
-		await get_tree().create_timer(instance.delay)\
-			.timeout.connect(func() -> void: do_avfx_projectile(instance, texture))
+		await get_tree()\
+		.create_timer(instance.delay)\
+		.timeout.connect(func() -> void:
+			do_avfx_projectile(
+				instance,
+				texture,
+				sprite_offset,
+				duration
+			)
+		)
 
 
-func do_avfx_projectile(instance: AVFXInstance, texture: Texture2D) -> void:
+func do_avfx_projectile(
+	instance: AVFXInstance,
+	texture: Texture2D,
+	sprite_offset: Vector2,
+	duration: float
+) -> void:
 	var frame_start: Control = get_monster_frame(instance.target if instance.target_self else instance.user)
 	var frame_end: Control = get_monster_frame(instance.user if instance.target_self else instance.target)
 	
@@ -115,23 +138,42 @@ func do_avfx_projectile(instance: AVFXInstance, texture: Texture2D) -> void:
 	
 	sprite.global_position = get_monster_frame(instance.target if instance.target_self else instance.user).global_position
 	
-	sprite.offset = instance.sprite_offset
+	sprite.offset = sprite_offset
 	
 	var tween: Tween = get_tree().create_tween()
-	tween.tween_property(sprite, "global_position", frame_end.global_position, instance.duration)\
+	tween.tween_property(sprite, "global_position", frame_end.global_position, duration)\
 		.set_delay(instance.delay)
 	tween.tween_callback(func() -> void: clean_up_avfx_node(instance, sprite))
 
 
-func avfx_animation(instance: AVFXInstance, animation_scene: PackedScene) -> void:
+func avfx_animation(
+	instance: AVFXInstance,
+	animation_scene: PackedScene,
+	animation_offset: Vector2
+) -> void:
 	if instance.delay == 0:
-		do_avfx_animation(instance, animation_scene)
+		do_avfx_animation(
+			instance,
+			animation_scene,
+			animation_offset
+		)
 	else:
-		await get_tree().create_timer(instance.delay)\
-			.timeout.connect(func() -> void: do_avfx_animation(instance, animation_scene))
+		await get_tree()\
+		.create_timer(instance.delay)\
+		.timeout.connect(func() -> void:
+			do_avfx_animation(
+				instance,
+				animation_scene,
+				animation_offset
+			)
+		)
 
 
-func do_avfx_animation(instance: AVFXInstance, animation_scene: PackedScene) -> void:
+func do_avfx_animation(
+	instance: AVFXInstance,
+	animation_scene: PackedScene,
+	animation_offset: Vector2
+) -> void:
 	var frame_target: Control = get_monster_frame(instance.target if instance.target_self else instance.user)
 	if frame_target == null:
 		print("Missing frame for animation!")
@@ -142,7 +184,7 @@ func do_avfx_animation(instance: AVFXInstance, animation_scene: PackedScene) -> 
 	add_child(animation_node)
 	animation_node.global_position = frame_target.global_position
 	animation_node.sprite_frames.set_animation_loop("default", false)
-	animation_node.offset = instance.animation_offset
+	animation_node.offset = animation_offset
 	animation_node.play()
 	animation_node.animation_finished.connect(func() -> void: clean_up_avfx_node(instance, animation_node))
 

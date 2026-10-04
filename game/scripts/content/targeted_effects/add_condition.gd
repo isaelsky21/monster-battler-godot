@@ -5,10 +5,17 @@ extends TargetedEffect
 @export_range(0.0, 1.0, 0.1) var chance_to_apply: float = 1.0
 
 
-func _do(doer: Monster, _source: Object, _is_critical: bool, _logs: Array[String], game_state: GameState, rng: RandomNumberGenerator) -> void:
-	var monster_controller: MonsterController = MonsterController.new(game_state, rng)
-	var target: Monster = doer if target_self else monster_controller.get_opposing_monster(doer)
+func apply(context: EffectContext) -> void:
+	if context.rng.randf() >= chance_to_apply:
+		return
 	
-	if rng.randf() < chance_to_apply:
-		# Create a condition from the resource and add it to the target
-		monster_controller.instantiate_condition_on_monster(target, condition_resource)
+	# Create a condition from the resource and add it to the target
+	var applied: bool = context.target.add_condition(condition_resource)
+	
+	if applied:
+		context.logs.append(
+			"%s was afflicted with %s!" % [
+				context.target.species_name,
+				condition_resource.condition_name
+			]
+		)

@@ -88,6 +88,9 @@ func use_item_at_index(trainer: Trainer, index: int) -> void:
 	
 	var logs: Array[String] = []
 	
+	var user: Monster = trainer.active_monster
+	var target: Monster = game_state.get_opposing_monster(user)
+	
 	var use_message: String = item.use_message.format({
 		"user_name": trainer.trainer_name,
 		"item_name": item.item_name
@@ -97,29 +100,35 @@ func use_item_at_index(trainer: Trainer, index: int) -> void:
 	
 	for effect: TargetedEffect in item.use_effects:
 		if effect.should_do(true, false):
-			effect._do(
-				trainer.active_monster,
-				item,
+			var effect_target: Monster = user if effect.target_self else target
+			
+			var context: EffectContext = EffectContext.new(
+				user,
+				effect_target,
+				MonsterType.Type.NORMAL,
 				false,
 				logs,
 				game_state,
 				rng
 			)
+			
+			effect.apply(context)
 	
 	var message_avfx: AVFXMessages = AVFXMessages.from_strings(logs)
 	var avfx_group: Array[AVFXResource] = item.use_avfx.duplicate()
 	avfx_group.append(message_avfx)
+	
 	AVFXManager.queue_avfx_effect_group(
 		avfx_group,
-		trainer.active_monster,
-		game_state
+		user,
+		target
 	)
 	
 	if item.consumable:
 		remove_item(trainer, item.resource, 1)
 
 
-func add_item(trainer: Trainer, item_resource: ItemResource, quantity: int) -> void:
+func add_item(trainer: Trainer, item_resource: ItemResource, quantity: int = 1) -> void:
 	var existing_item_index: int = trainer.items.find_custom(func(found_item: Item) -> bool: return found_item.resource == item_resource)
 	
 	# There is no matching item in the trainer's item array
@@ -130,7 +139,7 @@ func add_item(trainer: Trainer, item_resource: ItemResource, quantity: int) -> v
 		trainer.items.append(item)
 	else:
 		var item: Item = trainer.items[existing_item_index]
-		item.quantity += 1
+		item.quantity += quantity
 
 
 func remove_item(trainer: Trainer, item_resource: ItemResource, quantity: int) -> void:

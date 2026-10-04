@@ -2,8 +2,8 @@ class_name TrainerStartState
 extends Resource
 
 @export var trainer_name: String
-@export var monsters: Array[MonsterStartState]
-@export var items: Array[ItemStartState]
+@export var monsters: Array[MonsterStartState] = []
+@export var items: Array[ItemStartState] = []
 
 
 func generate_trainer(is_player: bool, monster_controller: MonsterController,\

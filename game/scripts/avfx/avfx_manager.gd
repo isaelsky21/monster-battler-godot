@@ -38,30 +38,47 @@ func _process(_delta: float) -> void:
 
 ## NOTE: If choices does not have an initial value, it will need to be set
 ## when calling the function
-func queue_avfx_message(message: String, choices: Array[ChoiceResource], game_state: GameState) -> void:
-	var message_resource: MessageResource = MessageResource.new(message, choices)
-	var messages: AVFXMessages = AVFXMessages.new([message_resource] as Array[MessageResource])
-	queue_avfx_effect_group([messages], null, game_state)
+func queue_avfx_message(
+	message: String,
+	choices: Array[ChoiceResource]
+) -> void:
+	var message_resource: MessageResource = MessageResource.new(
+		message,
+		choices
+	)
+	
+	var messages: AVFXMessages = AVFXMessages.new(
+		[message_resource] as Array[MessageResource]
+	)
+	
+	queue_avfx_effect_group(
+		[messages],
+		null,
+		null
+	)
 
 
 ## Add effect to the list
-func queue_avfx_effect_group(resources: Array[AVFXResource], monster: Monster, game_state: GameState) -> void:
-	active = true
+func queue_avfx_effect_group(
+	resources: Array[AVFXResource],
+	user: Monster,
+	target: Monster
+) -> void:
 	var group: Node = Node.new()
 	add_child(group)
+	
 	for resource: AVFXResource in resources:
 		# Prevent instanciating a null resource
 		if resource == null:
 			continue
-		var monster_controller: MonsterController = MonsterController.new(game_state)
-		var target: Monster = monster_controller.get_opposing_monster(monster)
 		
-		var instance: AVFXInstance = resource.generate(monster, target)
+		var instance: AVFXInstance = resource.generate(user, target)
 		group.add_child(instance)
 		instance.name = resource.get_script().get_global_name()
 	
-	if group.get_children().size() > 0:
+	if group.get_child_count() > 0:
 		effect_group_queue.append(group)
+		active = true
 	else:
 		group.queue_free()
 
@@ -73,11 +90,13 @@ func emit_block_start() -> void:
 
 ## Destroy effect after use
 func remove_effect(avfx_instance: AVFXInstance) -> void:
-	avfx_instance.queue_free()
+	if not is_instance_valid(avfx_instance):
+		return
 	
+	avfx_instance.queue_free()
 	active_effect_count -= 1
 	
-	if active_effect_count == 0:
+	if active_effect_count <= 0:
 		current_effect_group.queue_free()
 		current_effect_group = null
 
@@ -86,9 +105,18 @@ func timeout_current_group() -> void:
 	if current_effect_group == null:
 		return
 	
-	for child in current_effect_group.get_children():
-		if child.has_method("finish"):
-			child.finish()
+	push_warning("AVFX group timed out.")
 	
-	current_effect_group.queue_free()
+	for child: Node in current_effect_group.get_children():
+		child.queue_free()
+	
+	finish_current_group()
+
+
+## Completely Resets current effect group.
+func finish_current_group() -> void:
+	if is_instance_valid(current_effect_group):
+		current_effect_group.queue_free()
+	
 	current_effect_group = null
+	active_effect_count = 0

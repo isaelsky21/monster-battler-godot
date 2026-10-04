@@ -139,7 +139,7 @@ func handle_run() -> void:
 	
 	var choice_run: ChoiceResource = ChoiceResource.new("> Leave", handle_quit)
 	var choice_cancel: ChoiceResource = ChoiceResource.new("> Cancel", func() -> void: return)
-	AVFXManager.queue_avfx_message("Are you sure?", [choice_run, choice_cancel], game_state)
+	AVFXManager.queue_avfx_message("Are you sure?", [choice_run, choice_cancel])
 	#await get_tree().create_timer(2.0).timeout
 
 
@@ -151,7 +151,7 @@ func choose_opponent_move() -> void:
 	# If no moves, show log and end turn
 	var legal_move_indices: Array[int] = game_state.opponent_monster.get_legal_move_indices()
 	if legal_move_indices.size() <= 0:
-		AVFXManager.queue_avfx_message("Out of moves. Using default.", [], game_state)
+		AVFXManager.queue_avfx_message("Out of moves. Using default.", [])
 		trainer_controller.set_current_monster_move(game_state.opponent, -1)
 	else:
 		# Save move index from opponent moves list
@@ -185,7 +185,7 @@ func resolve_round() -> void:
 		if next_index == -1:
 			current_phase = PHASE.GAME_OVER
 			Events.on_game_over.emit(false)
-			AVFXManager.queue_avfx_message("You lose!", [quit_choice, restart_choice], game_state)
+			AVFXManager.queue_avfx_message("You lose!", [quit_choice, restart_choice])
 		else:
 			trainer_controller.set_add_trainer_monster_to_battle(game_state.player, next_index)
 	if game_state.opponent_monster.hp == 0:
@@ -194,14 +194,14 @@ func resolve_round() -> void:
 		if next_index == -1:
 			current_phase = PHASE.GAME_OVER
 			Events.on_game_over.emit(true)
-			AVFXManager.queue_avfx_message("You win!", [quit_choice, restart_choice], game_state)
+			AVFXManager.queue_avfx_message("You win!", [quit_choice, restart_choice])
 		else:
 			trainer_controller.set_add_trainer_monster_to_battle(game_state.opponent, next_index)
 	
 	var update_player_mon: AVFXFunction = AVFXFunction.new(func() -> void: Events.on_monster_updated.emit(game_state.player_monster))
 	var update_opponent_mon: AVFXFunction = AVFXFunction.new(func() -> void: Events.on_monster_updated.emit(game_state.opponent_monster))
 	
-	AVFXManager.queue_avfx_effect_group([update_player_mon, update_opponent_mon], null, game_state)
+	AVFXManager.queue_avfx_effect_group([update_player_mon, update_opponent_mon], null, null)
 
 
 # Handles move priority
@@ -214,7 +214,7 @@ func does_player_go_first() -> bool:
 			return true
 	if game_state.opponent.chosen_action_type == INTERACTION_MODE.ITEM\
 		or game_state.opponent.chosen_action_type == INTERACTION_MODE.MON:
-			return true
+			return false
 	
 	var player_move: Move = monster_controller.get_monster_move_at_index(\
 	game_state.player.active_monster, game_state.player.chosen_action_index)

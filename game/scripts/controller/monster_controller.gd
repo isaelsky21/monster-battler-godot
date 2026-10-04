@@ -44,15 +44,6 @@ func get_active_monster() -> Monster:
 		return game_state.opponent_monster
 
 
-func get_opposing_monster(monster: Monster) -> Monster:
-	match(monster):
-		game_state.player_monster:
-			return game_state.opponent_monster
-		game_state.opponent_monster:
-			return game_state.player_monster
-	return null
-
-
 func get_monster_move_at_index(monster: Monster, index: int) -> Move:
 	if index == -1:
 		return monster.fallback_move
@@ -72,7 +63,7 @@ func use_monster_move(monster: Monster, move: Move) -> void:
 		var use_message: String = move.use_message.format({"user_name": monster.species_name, "move_name": move.move_name})
 		logs.append(use_message)
 		
-		var opponent: Monster = get_opposing_monster(monster)
+		var opponent: Monster = game_state.get_opposing_monster(monster)
 		if opponent.hp == 0:
 			monster.move_blocked = false
 			return
@@ -95,48 +86,29 @@ func use_monster_move(monster: Monster, move: Move) -> void:
 		if !hit:
 			logs.append("The move missed!")
 		if crit:
-			logs.append("Critial hit!")
+			logs.append("Critical hit!")
 		
 		# If effect hits, proceed to use effect(s)
 		for effect: TargetedEffect in move.resource.use_effects:
 			if effect.should_do(hit, crit):
-				effect._do(monster, move, crit, logs, game_state, rng)
+				var context: EffectContext = create_effect_context(
+					monster,
+					effect,
+					move.type,
+					crit,
+					logs
+				)
+				
+				effect.apply(context)
 		
-		var message_avfx: AVFXMessages = AVFXMessages.from_strings(logs as Array[String])
+		var message_avfx: AVFXMessages = AVFXMessages.from_strings(logs)
 		var avfx_group: Array[AVFXResource] = move.resource.use_avfx.duplicate()
 		avfx_group.append(message_avfx)
-		AVFXManager.queue_avfx_effect_group(avfx_group, monster, game_state)
+		AVFXManager.queue_avfx_effect_group(avfx_group, monster, opponent)
 		
-		var cleanup_avfx_group: Array = []
 		var update_effect: AVFXFunction = AVFXFunction.new(func() -> void: Events.on_monster_updated.emit(monster))
 		var target_effect: AVFXFunction = AVFXFunction.new(func() -> void: Events.on_monster_updated.emit(opponent))
-		AVFXManager.queue_avfx_effect_group([update_effect, target_effect], monster, game_state)
-
-# Function to add/subtract hp to/from monster
-func adjust_monster_hp(monster: Monster, amount: int) -> void:
-	# Clamp value to ensure it stays between 0 and max HP
-	monster.hp = clamp(monster.hp + amount, 0, monster.max_hp)
-	
-	if monster.hp == 0:
-		faint_monster(monster)
-
-
-func faint_monster(monster: Monster) -> void:
-	return
-
-
-# Create condition and add to player conditions variable
-func instantiate_condition_on_monster(monster: Monster, condition_resource: ConditionResource) -> void:
-	# If condition has been stacked to the max, stop stacking
-	if monster.conditions\
-	.filter(func(condition_to_check: Condition) -> bool: return condition_to_check.resource == condition_resource)\
-	.size() >= condition_resource.max_stacks:
-		return
-	
-	var condition: Condition = Condition.new()
-	condition.resource = condition_resource
-	condition.duration_remaining = condition.resource.duration
-	monster.conditions.append(condition)
+		AVFXManager.queue_avfx_effect_group([update_effect, target_effect], null, null)
 
 
 func end_condition(monster: Monster, condition: Condition) -> void:
@@ -146,13 +118,39 @@ func end_condition(monster: Monster, condition: Condition) -> void:
 func on_turn_begun(monster: Monster) -> void:
 	if monster.hp == 0:
 		return
-	for condition: Condition in monster.conditions:
+	
+	var opponent: Monster = game_state.get_opposing_monster(monster)
+	
+	for condition: Condition in monster.conditions.duplicate():
 		var logs: Array[String] = []
-		AVFXManager.queue_avfx_effect_group(condition.resource.on_begin_turn_avfx, monster, game_state)
-		for effect in condition.resource.on_begin_turn_effects:
+		
+		for effect: TargetedEffect in condition.resource.on_begin_turn_effects:
 			# No crits for conditions, so hardcoded as false
-			effect._do(monster, condition, false, logs, game_state, rng)
+			var context: EffectContext = create_effect_context(
+				monster,
+				effect,
+				condition.get_type(),
+				false,
+				logs
+			)
+			
+			effect.apply(context)
+		
+		var avfx_group: Array[AVFXResource] = \
+			condition.resource.on_begin_turn_avfx.duplicate()
+		
+		if not logs.is_empty():
+			var message_avfx: AVFXMessages = AVFXMessages.from_strings(logs)
+			avfx_group.append(message_avfx)
+		
+		AVFXManager.queue_avfx_effect_group(
+			avfx_group,
+			monster,
+			opponent
+		)
+		
 		condition.duration_remaining -= 1
+		
 		if condition.duration_remaining <= 0:
 			end_condition(monster, condition)
 
@@ -174,7 +172,7 @@ func add_experience_to_monster(monster: Monster, experience: int) -> void:
 func level_up_monster(monster: Monster) -> void:
 	monster.level += 1
 	AVFXManager.queue_avfx_message("{monster_name} leveled up to level {level}"\
-	.format({"monster_name": monster.nickname, "level": monster.level}), [], game_state)
+	.format({"monster_name": monster.nickname, "level": monster.level}), [])
 	
 	# Search moves learned at current monster level and add to list
 	var moves_to_learn: Array[IntMoveResource] = monster.species.moves_learned_by_level.filter(func(int_move: IntMoveResource) -> bool: return int_move.level == monster.level)
@@ -194,7 +192,7 @@ func level_up_monster(monster: Monster) -> void:
 		monster.moves.append(move)
 		
 		AVFXManager.queue_avfx_message("{monster_name} learned {move_name}"\
-		.format({"monster_name": monster.nickname, "move_name": move_to_add.move_name}), [], game_state)
+		.format({"monster_name": monster.nickname, "move_name": move_to_add.move_name}), [])
 
 
 # Ask player if they want to replace move with newly learned one
@@ -217,9 +215,9 @@ func maybe_give_move_replace_choice(monster: Monster) -> void:
 		var choice_yes: ChoiceResource = ChoiceResource.new("> Yes", func() -> void: Events.on_player_pending_learn_move.emit(labels))
 		var choice_no: ChoiceResource = ChoiceResource.new\
 		("> No", func() -> void: AVFXManager.queue_avfx_message\
-		(did_not_learn_string, [], game_state))
+		(did_not_learn_string, []))
 		
-		AVFXManager.queue_avfx_message(want_to_learn_string, [choice_yes, choice_no], game_state)
+		AVFXManager.queue_avfx_message(want_to_learn_string, [choice_yes, choice_no])
 	else:
 		# Handle opponent move learning
 		return
@@ -238,6 +236,31 @@ func set_monster_move_at_index_to_pending_move(monster: Monster, index: int) -> 
 	AVFXManager.queue_avfx_message("{monster_name} forgot {old_move_name}\
 		and learned {new_move_name}".format({"monster_name": monster.nickname,\
 		"old_move_name": previous_move.move_name,\
-		"new_move_name": move.move_name}), [], game_state)
+		"new_move_name": move.move_name}), [])
 	
 	maybe_give_move_replace_choice(monster)
+
+
+func create_effect_context(
+	user: Monster,
+	effect: TargetedEffect,
+	source_type: MonsterType.Type,
+	is_critical: bool,
+	logs: Array[String]
+) -> EffectContext:
+	var target: Monster
+	
+	if effect.target_self:
+		target = user
+	else:
+		target = game_state.get_opposing_monster(user)
+	
+	return EffectContext.new(
+		user,
+		target,
+		source_type,
+		is_critical,
+		logs,
+		game_state,
+		rng
+	)

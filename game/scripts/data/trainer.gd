@@ -10,4 +10,8 @@ var chosen_action_type: GameRunner.INTERACTION_MODE = GameRunner.INTERACTION_MOD
 var chosen_action_index: int = -1
 
 var active_monster: Monster:
-	get: return monsters[active_monster_index]
+	get:
+		assert(not monsters.is_empty())
+		assert(active_monster_index >= 0)
+		assert(active_monster_index < monsters.size())
+		return monsters[active_monster_index]

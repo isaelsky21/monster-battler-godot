@@ -7,4 +7,9 @@ extends AVFXResource
 
 
 func _do(instance: AVFXInstance) -> void:
-	Events.on_avfx_projectile.emit(instance, sprite)
+	Events.on_avfx_projectile.emit(
+		instance,
+		sprite,
+		sprite_offset,
+		duration
+	)

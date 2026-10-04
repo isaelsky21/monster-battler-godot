@@ -1,7 +1,7 @@
 class_name AVFXShakeScreen
 extends AVFXResource
 
-@export var screen_offsets_and_timings: Array[Vector3]
+@export var screen_offsets_and_timings: Array[Vector3] = []
 
 
 func _do(instance: AVFXInstance) -> void:

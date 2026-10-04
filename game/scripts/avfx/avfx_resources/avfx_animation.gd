@@ -6,4 +6,8 @@ extends AVFXResource
 
 
 func _do(instance: AVFXInstance) -> void:
-	Events.on_avfx_animation.emit(instance, animation_scene)
+	Events.on_avfx_animation.emit(
+		instance,
+		animation_scene,
+		animation_offset
+	)

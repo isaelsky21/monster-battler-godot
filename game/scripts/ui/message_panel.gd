@@ -67,13 +67,17 @@ func run_instance(instance: AVFXInstance) -> void:
 	message_queue.clear()
 	
 	# This particular resource contains an AVFXResource so treat it as one
-	var resource: AVFXResource = instance.resource as AVFXMessages
+	var resource: AVFXMessages = instance.resource as AVFXMessages
+	
+	if resource == null:
+		push_error("MessagePanel received a non-AVFXMessages instance.")
+		instance.finish()
+		return
 	
 	for message: MessageResource in resource.messages:
 		message_queue.append(message)
-		
 	
-	if current_message == null:
+	if current_message == null and not message_queue.is_empty():
 		show_message(message_queue.pop_front())
 
 
