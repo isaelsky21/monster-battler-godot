@@ -64,9 +64,14 @@ func dismiss_message() -> void:
 
 func run_instance(instance: AVFXInstance) -> void:
 	current_instance = instance
-	message_queue = []
-	for message in instance.resource.messages:
+	message_queue.clear()
+	
+	# This particular resource contains an AVFXResource so treat it as one
+	var resource: AVFXResource = instance.resource as AVFXMessages
+	
+	for message: MessageResource in resource.messages:
 		message_queue.append(message)
+		
 	
 	if current_message == null:
 		show_message(message_queue.pop_front())

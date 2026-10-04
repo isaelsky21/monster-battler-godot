@@ -1,10 +1,10 @@
 class_name AVFXMessages
 extends AVFXResource
 
-@export var messages: Array[MessageResource]
+@export var messages: Array[MessageResource] = []
 
 
-func _init(p_messages: Array[MessageResource]) -> void:
+func _init(p_messages: Array[MessageResource] = []) -> void:
 	messages = p_messages
 
 
@@ -15,7 +15,7 @@ func _do(instance: AVFXInstance) -> void:
 
 
 static func from_strings(strings: Array[String]) -> AVFXMessages:
-	var avfx_messages_resource: AVFXMessages = AVFXMessages.new([])
+	var avfx_messages_resource: AVFXMessages = AVFXMessages.new()
 	for text: String in strings:
 		var message_resource: MessageResource = MessageResource.new(text)
 		avfx_messages_resource.messages.append(message_resource)

@@ -88,19 +88,35 @@ func use_item_at_index(trainer: Trainer, index: int) -> void:
 	
 	var logs: Array[String] = []
 	
-	var use_message: String = item.use_message.format({"user_name": trainer.trainer_name, "item_name": item.item_name})
+	var use_message: String = item.use_message.format({
+		"user_name": trainer.trainer_name,
+		"item_name": item.item_name
+	})
 	
-	var message_avfx: AVFXMessages = AVFXMessages.from_strings(logs as Array[String])
+	logs.append(use_message)
+	
+	for effect: TargetedEffect in item.use_effects:
+		if effect.should_do(true, false):
+			effect._do(
+				trainer.active_monster,
+				item,
+				false,
+				logs,
+				game_state,
+				rng
+			)
+	
+	var message_avfx: AVFXMessages = AVFXMessages.from_strings(logs)
 	var avfx_group: Array[AVFXResource] = item.use_avfx.duplicate()
 	avfx_group.append(message_avfx)
-	AVFXManager.queue_avfx_effect_group(avfx_group, trainer.active_monster, game_state)
+	AVFXManager.queue_avfx_effect_group(
+		avfx_group,
+		trainer.active_monster,
+		game_state
+	)
 	
 	if item.consumable:
 		remove_item(trainer, item.resource, 1)
-	
-	for effect: TargetedEffect in item.use_effects:
-			if effect.should_do(true, false):
-				effect._do(trainer.active_monster, item, false, logs, game_state, rng)
 
 
 func add_item(trainer: Trainer, item_resource: ItemResource, quantity: int) -> void:

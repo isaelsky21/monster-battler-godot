@@ -50,7 +50,7 @@ func queue_avfx_effect_group(resources: Array[AVFXResource], monster: Monster, g
 	var group: Node = Node.new()
 	add_child(group)
 	for resource: AVFXResource in resources:
-		# Prevent intanciating a null resource
+		# Prevent instanciating a null resource
 		if resource == null:
 			continue
 		var monster_controller: MonsterController = MonsterController.new(game_state)
