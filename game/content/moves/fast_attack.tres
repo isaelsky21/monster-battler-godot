@@ -47,7 +47,6 @@ metadata/_custom_type_script = "uid://bo8kw2et25c4l"
 [sub_resource type="Resource" id="Resource_3bm2p"]
 script = ExtResource("9_fxsml")
 animation_scene = ExtResource("9_c6loi")
-target_self = true
 delay = 0.5
 metadata/_custom_type_script = "uid://dbjy5ear6fuot"
 

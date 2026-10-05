@@ -94,11 +94,10 @@ func remove_effect(avfx_instance: AVFXInstance) -> void:
 		return
 	
 	avfx_instance.queue_free()
-	active_effect_count -= 1
+	active_effect_count = maxi(active_effect_count - 1, 0)
 	
-	if active_effect_count <= 0:
-		current_effect_group.queue_free()
-		current_effect_group = null
+	if active_effect_count == 0:
+		finish_current_group()
 
 
 func timeout_current_group() -> void:

@@ -3,9 +3,9 @@ class_name TargetedEffect
 extends Resource
 
 enum OutcomeFilter {
-	BOTH,
 	HIT,
 	MISS,
+	BOTH,
 	CRIT,
 }
 

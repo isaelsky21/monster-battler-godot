@@ -6,6 +6,8 @@ var resource: AVFXResource
 var user: Monster
 var target: Monster
 
+var _finished: bool = false
+
 var target_self: bool:
 	get: return resource.target_self
 var delay: float:
@@ -27,4 +29,8 @@ func execute() -> void:
 
 
 func finish() -> void:
+	if _finished:
+		return
+	
+	_finished = true
 	AVFXManager.remove_effect(self)

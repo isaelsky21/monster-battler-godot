@@ -124,7 +124,7 @@ func sum_condition_stats_for_code(code: Stat.Code) -> int:
 # For getting condition short name
 func get_condition_string() -> String:
 	if conditions.size() == 0:
-		return "LevelX"
+		return ""
 	else:
 		return conditions[0].short_name
 
@@ -132,13 +132,13 @@ func get_condition_string() -> String:
 # To show stats in UI
 func dump_state() -> String:
 	var condition_string: String = ""
-	var condition_names: Array = []
 	
 	for condition: Condition in conditions:
-		condition_names.append(condition.condition_name)
-	
 		condition_string += "{name} - ({remaining})\n"\
-		.format({"name": condition.condition_name, "remaining": condition.duration_remaining}) #"\n".join(condition_names)
+		.format({
+			"name": condition.condition_name,
+			"remaining": condition.duration_remaining
+		})
 	
 	return "Name: {name}\nHP: {hp}/{max_hp}\nAttack: {attack}\nDefense: {defense}\nSpecial Attack: {special_attack}\nSpecial Defense: {special_defense} \nSpeed: {speed} \nConditions: {conditions}"\
 	.format({

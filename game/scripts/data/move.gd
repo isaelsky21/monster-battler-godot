@@ -22,8 +22,3 @@ var use_message: String:
 
 var use_avfx: Array[AVFXResource]:
 	get: return resource.use_avfx
-
-
-# Used for duck-typing in TargetedEffect
-func get_type() -> MonsterType.Type:
-	return type

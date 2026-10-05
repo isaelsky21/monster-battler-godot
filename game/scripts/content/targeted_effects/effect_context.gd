@@ -6,7 +6,6 @@ var target: Monster
 var source_type: MonsterType.Type
 var is_critical: bool
 var logs: Array[String] = []
-var game_state: GameState
 var rng: RandomNumberGenerator
 
 
@@ -16,7 +15,6 @@ func _init(
 	p_source_type: MonsterType.Type,
 	p_is_critical: bool,
 	p_logs: Array[String],
-	p_game_state: GameState,
 	p_rng: RandomNumberGenerator
 ) -> void:
 	user = p_user
@@ -24,5 +22,4 @@ func _init(
 	source_type = p_source_type
 	is_critical = p_is_critical
 	logs = p_logs
-	game_state = p_game_state
 	rng = p_rng

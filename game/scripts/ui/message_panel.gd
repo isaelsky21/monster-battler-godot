@@ -3,8 +3,9 @@ extends Panel
 
 @export var label: TypeoutLabel
 @export var choice_parent: Control
-@export var message_queue: Array[MessageResource] = []
-@export var instance_queue: Array[AVFXInstance] = []
+
+var message_queue: Array[MessageResource] = []
+var instance_queue: Array[AVFXInstance] = []
 
 var current_message: MessageResource = null
 var current_instance: AVFXInstance

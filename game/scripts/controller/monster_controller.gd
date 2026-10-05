@@ -37,13 +37,6 @@ func create_monster(species: SpeciesResource, nickname: String = "") -> Monster:
 	return monster
 
 
-func get_active_monster() -> Monster:
-	if game_state.is_player_turn:
-		return game_state.player_monster
-	else:
-		return game_state.opponent_monster
-
-
 func get_monster_move_at_index(monster: Monster, index: int) -> Move:
 	if index == -1:
 		return monster.fallback_move
@@ -72,6 +65,15 @@ func use_monster_move(monster: Monster, move: Move) -> void:
 		if monster.move_blocked:
 			logs.append("But it can't move!")
 			monster.move_blocked = false
+			
+			var move_blocked_message_avfx: AVFXMessages = AVFXMessages.from_strings(logs)
+	
+			AVFXManager.queue_avfx_effect_group(
+				[move_blocked_message_avfx],
+				null,
+				null
+			)
+			
 			return
 		
 		# Subtract a usage when move is used
@@ -129,7 +131,7 @@ func on_turn_begun(monster: Monster) -> void:
 			var context: EffectContext = create_effect_context(
 				monster,
 				effect,
-				condition.get_type(),
+				condition.type,
 				false,
 				logs
 			)
@@ -261,6 +263,5 @@ func create_effect_context(
 		source_type,
 		is_critical,
 		logs,
-		game_state,
 		rng
 	)

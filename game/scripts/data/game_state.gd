@@ -3,7 +3,6 @@ class_name GameState
 # Trainers
 var player: Trainer
 var opponent: Trainer
-var is_player_turn: bool
 
 # Getters
 var player_monster: Monster:

@@ -4,13 +4,9 @@ var resource: ConditionResource
 var duration_remaining: int
 
 # Resource getter
+var type: MonsterType.Type:
+	get: return resource.type
 var condition_name: String:
 	get: return resource.condition_name
-
 var short_name: String:
 	get: return resource.short_name
-
-
-# Used for duck-typing in TargetedEffect
-func get_type() -> MonsterType.Type:
-	return MonsterType.Type.NORMAL

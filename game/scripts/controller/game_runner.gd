@@ -9,8 +9,6 @@ enum INTERACTION_MODE {NONE, FIGHT, ITEM, MON, MOVE_REPLACE}
 enum PHASE {AWAIT_INPUT, RESOLVE_ROUND, AWAIT_AVFX, GAME_OVER}
 var current_phase: PHASE
 
-var default_fallback_move: Resource = preload("res://content/moves/struggle.tres")
-
 var game_state: GameState
 var rng: RandomNumberGenerator
 
@@ -155,7 +153,13 @@ func choose_opponent_move() -> void:
 		trainer_controller.set_current_monster_move(game_state.opponent, -1)
 	else:
 		# Save move index from opponent moves list
-		var move_index: int = legal_move_indices.pick_random()
+		var random_index: int = rng.randi_range(
+			0,
+			legal_move_indices.size() - 1
+		)
+
+		var move_index: int = legal_move_indices[random_index]
+		
 		# Use monster move
 		trainer_controller.set_current_monster_move(game_state.opponent, move_index)
 
@@ -229,15 +233,22 @@ func does_player_go_first() -> bool:
 		return game_state.player_monster.speed >= game_state.opponent_monster.speed
 
 
-func handle_avfx_function(instance: AVFXInstance, function: Callable) -> void:
-	if instance.delay == 0:
-		call_avfx_function(instance, function)
-	else:
-		await get_tree().create_timer(instance.delay)\
-			.timeout.connect(func() -> void:\
-				call_avfx_function(instance, function))
+func handle_avfx_function(
+	instance: AVFXInstance,
+	function: Callable
+) -> void:
+	if instance.delay > 0:
+		await get_tree().create_timer(instance.delay).timeout
+		
+		if not is_instance_valid(instance):
+			return
+	
+	call_avfx_function(instance, function)
 
 
-func call_avfx_function(instance: AVFXInstance, function: Callable) -> void:
+func call_avfx_function(
+	instance: AVFXInstance,
+	function: Callable
+) -> void:
 	function.call()
 	instance.finish()

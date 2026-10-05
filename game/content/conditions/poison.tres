@@ -19,8 +19,8 @@ script = ExtResource("2_48m4k")
 base_damage = 5
 ignore_stats = true
 damage_log_string = "{target_name} is hurt by poison."
-outcome_filter = 2
 target_self = true
+outcome_filter = 2
 metadata/_custom_type_script = "uid://bkdjxoradugbj"
 
 [resource]

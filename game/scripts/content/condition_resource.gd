@@ -2,6 +2,7 @@ class_name ConditionResource
 extends Resource
 
 @export var condition_name: String
+@export var type: MonsterType.Type = MonsterType.Type.NORMAL
 @export var stat_modifiers: Array[StatModifier] = []
 @export var on_begin_turn_effects: Array[TargetedEffect] = []
 @export var on_begin_turn_avfx: Array[AVFXResource] = []

@@ -58,29 +58,53 @@ func animate_hp_bar(new_hp: int) -> void:
 
 
 # Animate monster when attacking
-func move_monster(avfx_instance: AVFXInstance, v2fs: Array[Vector2Float]) -> void:
-	var avfx_target: Monster = avfx_instance.user if avfx_instance.resource.target_self else avfx_instance.target
+func move_monster(
+	avfx_instance: AVFXInstance,
+	v2fs: Array[Vector2Float]
+) -> void:
+	var avfx_target: Monster = (
+		avfx_instance.user
+		if avfx_instance.target_self
+		else avfx_instance.target
+	)
+	
 	if avfx_target != bound_monster:
-		avfx_instance.finish()
 		return
 	
 	var tween: Tween = get_tree().create_tween()
 	
-	tween.tween_property(sprite, "offset", Vector2.ZERO, 0.0)\
-		.set_delay(avfx_instance.delay)
+	tween.tween_property(
+		sprite,
+		"offset",
+		Vector2.ZERO,
+		0.0
+	).set_delay(avfx_instance.delay)
 	
-	for v2f in v2fs:
-		var new_offset: Vector2 = v2f.v2 if your_pov else Vector2(-v2f.v2.x, v2f.v2.y)
-		tween.tween_property(sprite, "offset", new_offset, v2f.f)
+	for v2f: Vector2Float in v2fs:
+		var new_offset: Vector2 = (
+			v2f.v2
+			if your_pov
+			else Vector2(-v2f.v2.x, v2f.v2.y)
+		)
+		
+		tween.tween_property(
+			sprite,
+			"offset",
+			new_offset,
+			v2f.f
+		)
 	
 	tween.tween_property(sprite, "offset", Vector2.ZERO, 0.1)
 	tween.tween_callback(avfx_instance.finish)
 
 
 func flash_monster(avfx_instance: AVFXInstance, v2s: Array[Vector2]) -> void:
-	var avfx_target: Monster = avfx_instance.user if avfx_instance.target_self else avfx_instance.target
+	var avfx_target: Monster = (
+		avfx_instance.user
+		if avfx_instance.target_self
+		else avfx_instance.target
+	)
 	if avfx_target != bound_monster:
-		avfx_instance.finish()
 		return
 	
 	var tween: Tween = get_tree().create_tween()

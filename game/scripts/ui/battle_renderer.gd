@@ -98,24 +98,18 @@ func avfx_projectile(
 	sprite_offset: Vector2,
 	duration: float
 ) -> void:
-	if instance.delay == 0:
-		do_avfx_projectile(
-			instance,
-			texture,
-			sprite_offset,
-			duration
-		)
-	else:
-		await get_tree()\
-		.create_timer(instance.delay)\
-		.timeout.connect(func() -> void:
-			do_avfx_projectile(
-				instance,
-				texture,
-				sprite_offset,
-				duration
-			)
-		)
+	if instance.delay > 0.0:
+		await get_tree().create_timer(instance.delay).timeout
+		
+		if not is_instance_valid(instance):
+			return
+	
+	do_avfx_projectile(
+		instance,
+		texture,
+		sprite_offset,
+		duration
+	)
 
 
 func do_avfx_projectile(
@@ -141,8 +135,11 @@ func do_avfx_projectile(
 	sprite.offset = sprite_offset
 	
 	var tween: Tween = get_tree().create_tween()
-	tween.tween_property(sprite, "global_position", frame_end.global_position, duration)\
-		.set_delay(instance.delay)
+	tween.tween_property(
+		sprite,
+		"global_position",
+		frame_end.global_position,
+		duration)
 	tween.tween_callback(func() -> void: clean_up_avfx_node(instance, sprite))
 
 
@@ -151,22 +148,17 @@ func avfx_animation(
 	animation_scene: PackedScene,
 	animation_offset: Vector2
 ) -> void:
-	if instance.delay == 0:
-		do_avfx_animation(
-			instance,
-			animation_scene,
-			animation_offset
-		)
-	else:
-		await get_tree()\
-		.create_timer(instance.delay)\
-		.timeout.connect(func() -> void:
-			do_avfx_animation(
-				instance,
-				animation_scene,
-				animation_offset
-			)
-		)
+	if instance.delay > 0.0:
+		await get_tree().create_timer(instance.delay).timeout
+		
+		if not is_instance_valid(instance):
+			return
+		
+	do_avfx_animation(
+		instance,
+		animation_scene,
+		animation_offset
+	)
 
 
 func do_avfx_animation(
@@ -174,7 +166,14 @@ func do_avfx_animation(
 	animation_scene: PackedScene,
 	animation_offset: Vector2
 ) -> void:
-	var frame_target: Control = get_monster_frame(instance.target if instance.target_self else instance.user)
+	var visual_target: Monster = (
+		instance.user
+		if instance.target_self
+		else instance.target
+	)
+	
+	var frame_target: Control = get_monster_frame(visual_target)
+	
 	if frame_target == null:
 		print("Missing frame for animation!")
 		instance.finish()

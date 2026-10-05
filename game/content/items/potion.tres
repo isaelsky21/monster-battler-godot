@@ -16,8 +16,8 @@ metadata/_custom_type_script = "uid://dbjy5ear6fuot"
 [sub_resource type="Resource" id="Resource_esooi"]
 script = ExtResource("6_gv5qs")
 base_heal = 20
-outcome_filter = 2
 target_self = true
+outcome_filter = 2
 metadata/_custom_type_script = "uid://b06k8haxg1tsn"
 
 [resource]

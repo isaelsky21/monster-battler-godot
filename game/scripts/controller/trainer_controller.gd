@@ -100,16 +100,12 @@ func use_item_at_index(trainer: Trainer, index: int) -> void:
 	
 	for effect: TargetedEffect in item.use_effects:
 		if effect.should_do(true, false):
-			var effect_target: Monster = user if effect.target_self else target
-			
-			var context: EffectContext = EffectContext.new(
+			var context: EffectContext = monster_controller.create_effect_context(
 				user,
-				effect_target,
+				effect,
 				MonsterType.Type.NORMAL,
 				false,
 				logs,
-				game_state,
-				rng
 			)
 			
 			effect.apply(context)
