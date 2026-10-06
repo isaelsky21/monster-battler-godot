@@ -6,20 +6,32 @@ extends Resource
 @export var items: Array[ItemStartState] = []
 
 
-func generate_trainer(is_player: bool, monster_controller: MonsterController,\
-		game_state: GameState, rng: RandomNumberGenerator) -> Trainer:
-			var generated_monsters: Array[Monster] = []
-			for monster in monsters:
-				generated_monsters.append(monster.generate(game_state, rng))
-			
-			var trainer_controller: TrainerController = TrainerController.new(\
-			monster_controller, game_state, rng)
-			
-			var trainer: Trainer = trainer_controller.create_trainer(\
-			generated_monsters, is_player)
-			trainer.trainer_name = trainer_name
-			
-			for item in items:
-				trainer_controller.add_item(trainer, item.resource, item.quantity)
+func generate_trainer(
+	is_player: bool,
+	monster_controller: MonsterController,
+	trainer_controller: TrainerController
+) -> Trainer:
+	var generated_monsters: Array[Monster] = []
 	
-			return trainer
+	for monster_start_state: MonsterStartState in monsters:
+		var monster: Monster = monster_start_state.generate(
+			monster_controller
+		)
+		
+		generated_monsters.append(monster)
+	
+	var trainer: Trainer = trainer_controller.create_trainer(
+		generated_monsters,
+		is_player
+	)
+	
+	trainer.trainer_name = trainer_name
+	
+	for item_start_state: ItemStartState in items:
+		trainer_controller.add_item(
+			trainer,
+			item_start_state.resource,
+			item_start_state.quantity
+		)
+	
+	return trainer

@@ -3,14 +3,12 @@ extends RefCounted
 
 var monster_controller: MonsterController
 var game_state: GameState
-var rng: RandomNumberGenerator
 
 
 func _init(p_monster_controller: MonsterController,\
-		p_game_state: GameState, p_rng: RandomNumberGenerator) -> void:
+		p_game_state: GameState) -> void:
 	monster_controller = p_monster_controller
 	game_state = p_game_state
-	rng = p_rng
 
 
 func create_trainer(monsters: Array[Monster], is_player: bool = false) -> Trainer:
@@ -22,16 +20,30 @@ func create_trainer(monsters: Array[Monster], is_player: bool = false) -> Traine
 
 
 func do_trainer_turn(trainer: Trainer) -> void:
-	monster_controller.on_turn_begun(trainer.active_monster)
+	var acting_monster: Monster = trainer.active_monster
+	
+	monster_controller.on_turn_begun(acting_monster)
 	
 	match trainer.chosen_action_type:
 		GameRunner.INTERACTION_MODE.FIGHT:
-			var move: Move = monster_controller.get_monster_move_at_index(trainer.active_monster, trainer.chosen_action_index)
-			monster_controller.use_monster_move(trainer.active_monster, move)
+			var move: Move = monster_controller.get_monster_move_at_index(
+				trainer.active_monster,
+				trainer.chosen_action_index
+			)
+			monster_controller.use_monster_move(acting_monster, move)
 		GameRunner.INTERACTION_MODE.MON:
-			add_trainer_monster_to_battle(trainer, trainer.chosen_action_index)
+			add_trainer_monster_to_battle(
+				trainer,
+				trainer.chosen_action_index
+			)
 		GameRunner.INTERACTION_MODE.ITEM:
-			use_item_at_index(trainer, trainer.chosen_action_index)
+			use_item_at_index(
+				trainer,
+				trainer.chosen_action_index
+			)
+	
+	# Clear per-turn state from the monster that actually began the turn.
+	acting_monster.move_blocked = false
 	
 	# Reset trainer's action index so it doesn't get used repeatedly
 	trainer.chosen_action_index = -1

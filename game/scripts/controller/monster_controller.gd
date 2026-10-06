@@ -82,7 +82,11 @@ func use_monster_move(monster: Monster, move: Move) -> void:
 		# Save boolean that checks if a move hits (if random number is less than
 		# base accuracy, then it hits 
 		var hit: bool = rng.randf() < move.base_accuracy
-		var crit: bool = rng.randf() < Calculations.get_critical_chance(monster)
+		var crit: bool = (
+			hit
+			and rng.randf() < Calculations.get_critical_chance(monster)
+		)
+		
 		
 		# Show message if move doesn't hit, same for critical hit
 		if !hit:
@@ -214,15 +218,34 @@ func maybe_give_move_replace_choice(monster: Monster) -> void:
 				"move_name": monster.pending_move.move_name})
 		var did_not_learn_string: String = "{monster_name} did not learn {move_name}."\
 			.format({"monster_name": monster.nickname, "move_name": monster.pending_move.move_name})
-		var choice_yes: ChoiceResource = ChoiceResource.new("> Yes", func() -> void: Events.on_player_pending_learn_move.emit(labels))
-		var choice_no: ChoiceResource = ChoiceResource.new\
-		("> No", func() -> void: AVFXManager.queue_avfx_message\
-		(did_not_learn_string, []))
+		var choice_yes: ChoiceResource = ChoiceResource.new(
+			"> Yes",
+			func() -> void:
+				Events.on_player_pending_learn_move.emit(labels))
+		var choice_no: ChoiceResource = ChoiceResource.new(
+			"> No",
+			func() -> void:
+				decline_pending_move(
+					monster,
+					did_not_learn_string
+				)
+		)
 		
 		AVFXManager.queue_avfx_message(want_to_learn_string, [choice_yes, choice_no])
 	else:
 		# Handle opponent move learning
 		return
+
+
+func decline_pending_move(
+	monster: Monster,
+	message: String
+) -> void:
+	AVFXManager.queue_avfx_message(message, [])
+	
+	monster.pending_move = null
+	
+	maybe_give_move_replace_choice(monster)
 
 
 func set_monster_move_at_index_to_pending_move(monster: Monster, index: int) -> void:

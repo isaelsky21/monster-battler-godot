@@ -77,8 +77,12 @@ func run_instance(instance: AVFXInstance) -> void:
 	
 	for message: MessageResource in resource.messages:
 		message_queue.append(message)
-	
-	if current_message == null and not message_queue.is_empty():
+
+	if message_queue.is_empty():
+		dismiss_message()
+		return
+
+	if current_message == null:
 		show_message(message_queue.pop_front())
 
 

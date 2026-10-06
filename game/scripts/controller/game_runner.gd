@@ -25,8 +25,8 @@ func _ready() -> void:
 	Events.request_restart.connect(handle_restart)
 	Events.request_quit.connect(handle_run)
 	
-	Events.on_avfx_block_start.connect(func() -> void: current_phase = PHASE.AWAIT_AVFX)
-	Events.on_avfx_block_end.connect(func() -> void: current_phase = PHASE.AWAIT_INPUT)
+	Events.on_avfx_block_start.connect(handle_avfx_block_start)
+	Events.on_avfx_block_end.connect(handle_avfx_block_end)
 	Events.on_avfx_function.connect(handle_avfx_function)
 	
 	Events.on_ui_ready.connect(set_up_model)
@@ -58,7 +58,7 @@ func set_up_model() -> void:
 	
 	# Initialize controllers for use throughout script
 	monster_controller = MonsterController.new(game_state, rng)
-	trainer_controller = TrainerController.new(monster_controller, game_state, rng)
+	trainer_controller = TrainerController.new(monster_controller, game_state)
 	
 	var start_state: Resource = preload("res://content/start_state/default.tres")
 	
@@ -74,8 +74,17 @@ func set_up_model() -> void:
 
 
 func generate_state_from_start_state(start_state: StartState) -> void:
-	game_state.player = start_state.player_start_state.generate_trainer(true, monster_controller, game_state, rng)
-	game_state.opponent = start_state.opponent_start_state.generate_trainer(false, monster_controller, game_state, rng)
+	game_state.player = start_state.player_start_state.generate_trainer(
+		true,
+		monster_controller,
+		trainer_controller
+	)
+	
+	game_state.opponent = start_state.opponent_start_state.generate_trainer(
+		false,
+		monster_controller,
+		trainer_controller
+	)
 
 
 func handle_request_menu_fight() -> void:
@@ -179,28 +188,102 @@ func resolve_round() -> void:
 	var restart_choice: ChoiceResource =\
 		ChoiceResource.new("> Restart", handle_restart)
 	
-	if game_state.player_monster.hp == 0:
-		monster_controller.add_experience_to_monster(\
-			game_state.opponent_monster,\
-			Calculations.monster_experience_yield(\
-			game_state.player_monster
-		))
-		var next_index: int = (trainer_controller.get_next_usable_monster_index(game_state.player))
+	var player_fainted: bool = game_state.player_monster.is_fainted()
+	var opponent_fainted: bool = game_state.opponent_monster.is_fainted()
+
+	if player_fainted and opponent_fainted:
+		var player_next_index: int = \
+			trainer_controller.get_next_usable_monster_index(game_state.player)
+		
+		var opponent_next_index: int = \
+			trainer_controller.get_next_usable_monster_index(game_state.opponent)
+		
+		if player_next_index != -1 and opponent_next_index != -1:
+			trainer_controller.set_add_trainer_monster_to_battle(
+				game_state.player,
+				player_next_index
+			)
+			
+			trainer_controller.set_add_trainer_monster_to_battle(
+				game_state.opponent,
+				opponent_next_index
+			)
+		
+		elif player_next_index != -1:
+			current_phase = PHASE.GAME_OVER
+			Events.on_game_over.emit(true)
+			AVFXManager.queue_avfx_message(
+				"You win!",
+				[quit_choice, restart_choice]
+			)
+		
+		elif opponent_next_index != -1:
+			current_phase = PHASE.GAME_OVER
+			Events.on_game_over.emit(false)
+			AVFXManager.queue_avfx_message(
+				"You lose!",
+				[quit_choice, restart_choice]
+			)
+		
+		# Draw
+		else:
+			current_phase = PHASE.GAME_OVER
+			AVFXManager.queue_avfx_message(
+				"You lose!",
+				[quit_choice, restart_choice]
+			)
+
+	elif player_fainted:
+		monster_controller.add_experience_to_monster(
+			game_state.opponent_monster,
+			Calculations.monster_experience_yield(
+				game_state.player_monster
+			)
+		)
+		
+		var next_index: int = \
+			trainer_controller.get_next_usable_monster_index(
+				game_state.player
+			)
+		
 		if next_index == -1:
 			current_phase = PHASE.GAME_OVER
 			Events.on_game_over.emit(false)
-			AVFXManager.queue_avfx_message("You lose!", [quit_choice, restart_choice])
+			AVFXManager.queue_avfx_message(
+				"You lose!",
+				[quit_choice, restart_choice]
+			)
 		else:
-			trainer_controller.set_add_trainer_monster_to_battle(game_state.player, next_index)
-	if game_state.opponent_monster.hp == 0:
-		monster_controller.add_experience_to_monster(game_state.player_monster, Calculations.monster_experience_yield(game_state.opponent_monster))
-		var next_index: int = trainer_controller.get_next_usable_monster_index(game_state.opponent)
+			trainer_controller.set_add_trainer_monster_to_battle(
+				game_state.player,
+				next_index
+			)
+
+	elif opponent_fainted:
+		monster_controller.add_experience_to_monster(
+			game_state.player_monster,
+			Calculations.monster_experience_yield(
+				game_state.opponent_monster
+			)
+		)
+		
+		var next_index: int = \
+			trainer_controller.get_next_usable_monster_index(
+				game_state.opponent
+			)
+		
 		if next_index == -1:
 			current_phase = PHASE.GAME_OVER
 			Events.on_game_over.emit(true)
-			AVFXManager.queue_avfx_message("You win!", [quit_choice, restart_choice])
+			AVFXManager.queue_avfx_message(
+				"You win!",
+				[quit_choice, restart_choice]
+			)
 		else:
-			trainer_controller.set_add_trainer_monster_to_battle(game_state.opponent, next_index)
+			trainer_controller.set_add_trainer_monster_to_battle(
+				game_state.opponent,
+				next_index
+			)
 	
 	var update_player_mon: AVFXFunction = AVFXFunction.new(func() -> void: Events.on_monster_updated.emit(game_state.player_monster))
 	var update_opponent_mon: AVFXFunction = AVFXFunction.new(func() -> void: Events.on_monster_updated.emit(game_state.opponent_monster))
@@ -252,3 +335,13 @@ func call_avfx_function(
 ) -> void:
 	function.call()
 	instance.finish()
+
+
+func handle_avfx_block_start() -> void:
+	if current_phase != PHASE.GAME_OVER:
+		current_phase = PHASE.AWAIT_AVFX
+
+
+func handle_avfx_block_end() -> void:
+	if current_phase != PHASE.GAME_OVER:
+		current_phase = PHASE.AWAIT_INPUT

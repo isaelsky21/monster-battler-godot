@@ -48,7 +48,7 @@ func update_monster_data(monster: Monster) -> void:
 		sprite.texture = bound_monster.image
 		hp_bar.max_value = bound_monster.max_hp
 		animate_hp_bar(bound_monster.hp)
-		hp_label.text = "{hp}\\{max_hp}".format({"hp": bound_monster.hp, "max_hp": bound_monster.max_hp})
+		hp_label.text = "{hp}/{max_hp}".format({"hp": bound_monster.hp, "max_hp": bound_monster.max_hp})
 		status_label.text = bound_monster.get_condition_string()
 
 

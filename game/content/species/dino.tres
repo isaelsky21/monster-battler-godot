@@ -5,14 +5,12 @@
 [ext_resource type="Script" uid="uid://h3fkq0vyhx65" path="res://scripts/content/int_move_resource.gd" id="2_eqesu"]
 [ext_resource type="Script" uid="uid://b8pt4buw614s3" path="res://scripts/content/move_resource.gd" id="3_gfe2g"]
 [ext_resource type="Resource" uid="uid://xdeavx7x3eb2" path="res://content/moves/smack.tres" id="4_br6pm"]
-[ext_resource type="Resource" uid="uid://cctmlgij4rqdn" path="res://content/moves/regenerate.tres" id="6_74jmo"]
-[ext_resource type="Resource" uid="uid://ca4tmlywk0wb2" path="res://content/moves/torch.tres" id="7_t0a13"]
 
 [resource]
 script = ExtResource("1_pqx4l")
 image = ExtResource("1_htcjd")
 species_name = "Dino"
-starting_moves = Array[ExtResource("3_gfe2g")]([ExtResource("4_br6pm"), ExtResource("6_74jmo"), ExtResource("7_t0a13")])
+starting_moves = Array[ExtResource("3_gfe2g")]([ExtResource("4_br6pm")])
 type = 4
 base_max_hp = 25
 base_attack = 4
