@@ -22,7 +22,6 @@ func _ready() -> void:
 	Events.request_menu_monsters.connect(handle_request_menu_monsters)
 	Events.request_menu_items.connect(handle_request_menu_items)
 	Events.request_option_selected.connect(handle_menu_option_selected)
-	Events.request_restart.connect(handle_restart)
 	Events.request_quit.connect(handle_run)
 	
 	Events.on_avfx_block_start.connect(handle_avfx_block_start)
@@ -106,9 +105,24 @@ func handle_request_menu_fight() -> void:
 func handle_request_menu_monsters() -> void:
 	if current_phase != PHASE.AWAIT_INPUT:
 		return
+	
 	var labels: Array[StringEnabled] = []
-	for monster in game_state.player.monsters:
-		labels.append(StringEnabled.new(monster.species_name, monster.hp > 0))
+	
+	for index: int in range(game_state.player.monsters.size()):
+		var monster: Monster = game_state.player.monsters[index]
+		
+		var enabled: bool = (
+			monster.hp > 0
+			and index != game_state.player.active_monster_index
+		)
+		
+		labels.append(
+			StringEnabled.new(
+				monster.species_name,
+				enabled
+			)
+		)
+	
 	Events.on_menu_select_monster.emit(labels)
 
 
@@ -137,6 +151,7 @@ func handle_menu_option_selected(mode: INTERACTION_MODE, index: int) -> void:
 
 
 func handle_restart() -> void:
+	AVFXManager.reset()
 	set_up_model()
 
 
@@ -199,12 +214,12 @@ func resolve_round() -> void:
 			trainer_controller.get_next_usable_monster_index(game_state.opponent)
 		
 		if player_next_index != -1 and opponent_next_index != -1:
-			trainer_controller.set_add_trainer_monster_to_battle(
+			trainer_controller.queue_add_trainer_monster_to_battle(
 				game_state.player,
 				player_next_index
 			)
 			
-			trainer_controller.set_add_trainer_monster_to_battle(
+			trainer_controller.queue_add_trainer_monster_to_battle(
 				game_state.opponent,
 				opponent_next_index
 			)
@@ -225,9 +240,10 @@ func resolve_round() -> void:
 				[quit_choice, restart_choice]
 			)
 		
-		# Draw
+		# Simultaneous KO with no remaining monsters counts as a loss.
 		else:
 			current_phase = PHASE.GAME_OVER
+			Events.on_game_over.emit(false)
 			AVFXManager.queue_avfx_message(
 				"You lose!",
 				[quit_choice, restart_choice]
@@ -254,7 +270,7 @@ func resolve_round() -> void:
 				[quit_choice, restart_choice]
 			)
 		else:
-			trainer_controller.set_add_trainer_monster_to_battle(
+			trainer_controller.queue_add_trainer_monster_to_battle(
 				game_state.player,
 				next_index
 			)
@@ -280,7 +296,7 @@ func resolve_round() -> void:
 				[quit_choice, restart_choice]
 			)
 		else:
-			trainer_controller.set_add_trainer_monster_to_battle(
+			trainer_controller.queue_add_trainer_monster_to_battle(
 				game_state.opponent,
 				next_index
 			)

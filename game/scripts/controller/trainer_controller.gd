@@ -11,11 +11,16 @@ func _init(p_monster_controller: MonsterController,\
 	game_state = p_game_state
 
 
-func create_trainer(monsters: Array[Monster], is_player: bool = false) -> Trainer:
+func create_trainer(
+	monsters: Array[Monster],
+	is_player: bool = false
+) -> Trainer:
 	var trainer: Trainer = Trainer.new()
 	trainer.is_player = is_player
 	trainer.monsters = monsters
-	set_add_trainer_monster_to_battle(trainer, 0)
+	
+	add_trainer_monster_to_battle(trainer, 0)
+	
 	return trainer
 
 
@@ -63,6 +68,25 @@ func add_trainer_monster_to_battle(trainer: Trainer, monster_index: int) -> void
 	var monster: Monster = trainer.monsters[monster_index]
 	trainer.active_monster_index = monster_index
 	Events.on_monster_added_to_battle.emit(monster, trainer.is_player)
+
+
+func queue_add_trainer_monster_to_battle(
+	trainer: Trainer,
+	monster_index: int
+) -> void:
+	var switch_effect: AVFXFunction = AVFXFunction.new(
+		func() -> void:
+			add_trainer_monster_to_battle(
+				trainer,
+				monster_index
+			)
+	)
+	
+	AVFXManager.queue_avfx_effect_group(
+		[switch_effect],
+		null,
+		null
+	)
 
 
 func get_next_usable_monster_index(trainer: Trainer) -> int:

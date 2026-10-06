@@ -5,9 +5,12 @@ var game_state: GameState
 var rng: RandomNumberGenerator
 
 
-func _init(state: GameState = null, random_number_generator: RandomNumberGenerator = null) -> void:
-	game_state = state
-	rng = random_number_generator
+func _init(
+	p_game_state: GameState,
+	p_rng: RandomNumberGenerator
+) -> void:
+	game_state = p_game_state
+	rng = p_rng
 
 
 func create_monster(species: SpeciesResource, nickname: String = "") -> Monster:
@@ -117,8 +120,16 @@ func use_monster_move(monster: Monster, move: Move) -> void:
 		AVFXManager.queue_avfx_effect_group([update_effect, target_effect], null, null)
 
 
-func end_condition(monster: Monster, condition: Condition) -> void:
-	monster.conditions.remove_at(monster.conditions.find(condition))
+func end_condition(
+	monster: Monster,
+	condition: Condition
+) -> void:
+	var index: int = monster.conditions.find(condition)
+	
+	if index == -1:
+		return
+	
+	monster.conditions.remove_at(index)
 
 
 func on_turn_begun(monster: Monster) -> void:

@@ -119,3 +119,20 @@ func finish_current_group() -> void:
 	
 	current_effect_group = null
 	active_effect_count = 0
+
+
+func reset() -> void:
+	timeout_timer.stop()
+	
+	for group: Node in effect_group_queue:
+		if is_instance_valid(group):
+			group.queue_free()
+	
+	effect_group_queue.clear()
+	
+	if is_instance_valid(current_effect_group):
+		current_effect_group.queue_free()
+	
+	current_effect_group = null
+	active_effect_count = 0
+	active = false
